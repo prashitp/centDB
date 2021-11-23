@@ -3,13 +3,14 @@ package com.example.models;
 import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@lombok.Data
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Data {
+public class Field {
 
     @NotNull
     private Column column;
