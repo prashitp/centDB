@@ -25,6 +25,12 @@ public class IFileDataAccessorImpl implements  IFileDataAccessor {
 
     private List<Column> columns;
 
+//    Write given rows to the table file and returns the number of rows affected
+    @Override
+    public int writeRowsToTheTable(Table table) {
+        return -1;
+    }
+
 //    This method will read data from data file
 //    Returns the rows as per the column list and operands provided
 //    This method is to be used by query processor

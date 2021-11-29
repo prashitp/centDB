@@ -1,6 +1,7 @@
 package com.example.services.dataAccessor;
 
 import com.example.models.Row;
+import com.example.models.Table;
 import com.example.models.TableQuery;
 
 import java.util.List;
@@ -8,4 +9,7 @@ import java.util.List;
 public interface IFileDataAccessor {
 
     List<Row> readDataFromTable(TableQuery query);
+
+    int writeRowsToTheTable(Table table);
+
 }
