@@ -6,4 +6,6 @@ public interface IMetadataService {
 
     Metadata readMetadataForDatabase(String databaseName);
 
+    boolean writeMetadataToFile(Metadata metadata);
+
 }

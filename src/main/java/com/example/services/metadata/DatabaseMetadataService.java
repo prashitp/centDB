@@ -24,6 +24,11 @@ public class DatabaseMetadataService implements IMetadataService {
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
     @Override
+    public boolean writeMetadataToFile(Metadata metadata) {
+        return false;
+    }
+
+    @Override
     public Metadata readMetadataForDatabase(String databaseName) {
         Metadata metadata = new Metadata();
         try {
