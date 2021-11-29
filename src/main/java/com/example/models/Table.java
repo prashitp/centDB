@@ -1,6 +1,5 @@
 package com.example.models;
 
-import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Table {
 
-    @NotNull
+//    @NotNull
     private String name;
 
     private List<Column> columns;
 
     private Column primaryKey;
 
-    private List<Field> rows;
+    private List<Row> rows;
 }
