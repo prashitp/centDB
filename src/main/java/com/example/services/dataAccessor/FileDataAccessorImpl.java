@@ -1,7 +1,7 @@
 package com.example.services.dataAccessor;
 
 import com.example.models.*;
-import com.example.services.metadata.DatabaseMetadataService;
+import com.example.services.metadata.DatabaseMetadataServiceImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class IFileDataAccessorImpl implements  IFileDataAccessor {
+public class FileDataAccessorImpl implements FileDataAccessor {
 
     final static char PIPE_DELIMITER = '|';
     final static char ESCAPE_CHAR = '\\';
@@ -37,7 +37,7 @@ public class IFileDataAccessorImpl implements  IFileDataAccessor {
     @Override
     public List<Row> readDataFromTable(TableQuery query) {
         String schemaName = query.getSchemaName();
-        metadata = new DatabaseMetadataService().readMetadataForDatabase(schemaName);
+        metadata = new DatabaseMetadataServiceImpl().readMetadataForDatabase(schemaName);
         columns = metadata.getAllColumnsForTable(query.getTableName());
         List<Row> rows = new ArrayList<>();
 

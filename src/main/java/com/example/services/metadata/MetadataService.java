@@ -2,7 +2,7 @@ package com.example.services.metadata;
 
 import com.example.models.Metadata;
 
-public interface IMetadataService {
+public interface MetadataService {
 
     Metadata readMetadataForDatabase(String databaseName);
 

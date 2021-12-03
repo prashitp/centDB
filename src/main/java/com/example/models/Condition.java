@@ -1,5 +1,6 @@
 package com.example.models;
 
+import com.example.models.enums.Operators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

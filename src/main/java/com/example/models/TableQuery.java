@@ -1,5 +1,6 @@
 package com.example.models;
 
+import com.example.models.enums.TableDMLOperation;
 import lombok.Getter;
 
 import java.util.ArrayList;
