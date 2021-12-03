@@ -19,7 +19,7 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
         DB, TB, CL, PK
     }
 
-    private final static String METADATA_BASE_DIRECTORY = "dbmsMetadata/";
+    private final static String METADATA_BASE_DIRECTORY = "METADATA/";
     private final static String METADATA_FILE_PREFIX = "MD_";
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
