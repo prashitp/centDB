@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 
-    private String name;
+    private String username;
+
+    private String encryptedPassword;
 
     private String permission;
 }
