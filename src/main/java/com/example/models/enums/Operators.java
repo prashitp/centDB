@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.models.enums;
 
 import com.example.exceptions.UnrecognisedOperator;
 

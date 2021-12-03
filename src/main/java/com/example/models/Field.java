@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Field {
 
-//    @NotNull
     private Column column;
 
     private Object value;

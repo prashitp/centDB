@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Table {
 
-//    @NotNull
     private String name;
 
     private List<Column> columns;

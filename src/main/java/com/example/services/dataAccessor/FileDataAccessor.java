@@ -6,7 +6,7 @@ import com.example.models.TableQuery;
 
 import java.util.List;
 
-public interface IFileDataAccessor {
+public interface FileDataAccessor {
 
     List<Row> readDataFromTable(TableQuery query);
 

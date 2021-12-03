@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DatabaseMetadataService implements IMetadataService {
+public class DatabaseMetadataServiceImpl implements MetadataService {
 
     enum MetadataToken {
         DB, TB, CL, PK
@@ -33,7 +33,7 @@ public class DatabaseMetadataService implements IMetadataService {
         Metadata metadata = new Metadata();
         try {
             metadata = readMetaDataFile(databaseName);
-            if (!validateMetadataEntries(metadata)) {
+            if (!validate(metadata)) {
                 throw new Exception("Invalid metadata object : " + metadata.toString());
             }
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class DatabaseMetadataService implements IMetadataService {
         return metadata;
     }
 
-    private Metadata readMetaDataFile(String databaseName) throws Exception {
+    private Metadata readMetaDataFile(String databaseName) {
         Metadata metadata = new Metadata();
         String metadataFileSuffix = databaseName.toUpperCase(Locale.ROOT);
         String metadataFilePathString = METADATA_BASE_DIRECTORY + METADATA_FILE_PREFIX + metadataFileSuffix + METADATA_FILE_EXTENSION;
@@ -64,52 +64,59 @@ public class DatabaseMetadataService implements IMetadataService {
         return metadata;
     }
 
-    private Metadata parseMetadataFile(List<String> lines) throws Exception {
-        String databaseName = null;
-        String tableName = null;
-        String primaryKey = null;
+    private Metadata parseMetadataFile(List<String> lines) {
+        String databaseName;
+        String tableName;
+        String primaryKey;
+
         Metadata metadata = new Metadata();
         Database database = new Database();
-        Map<String, String> columns = new HashMap<>();
-
         Table table = new Table();
-        List<Column> dbColumns = new ArrayList<>();
+
+        Map<String, String> columns = new HashMap<>();
+        List<Column> dbColumns;
+
         for (String line: lines) {
             StringTokenizer tokenizer = new StringTokenizer(line, "|");
-            String token = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-            if (MetadataToken.DB.name().equals(token))  {
-                databaseName = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-                database.setName(databaseName);
-            }
-            else if (MetadataToken.TB.name().equals(token)) {
-                tableName = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-                if (columns.isEmpty()) {
-                    table.setName(tableName);
-                    database.addTable(table);
-                    continue;
-                }
-                dbColumns = columns.keySet().stream().map(k -> new Column(k, columns.get(k))).collect(Collectors.toList());
-                table.setColumns(dbColumns);
+            String token = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+
+            switch(MetadataToken.valueOf(token)) {
+                case DB:
+                    databaseName = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    database.setName(databaseName);
+                    break;
+
+                case TB:
+                    tableName = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    if (columns.isEmpty()) {
+                        table.setName(tableName);
+                        database.addTable(table);
+                        continue;
+                    }
+                    dbColumns = columns.keySet().stream().map(k -> new Column(k, columns.get(k))).collect(Collectors.toList());
+                    table.setColumns(dbColumns);
 
 //              initialize a new table and column object here and clean previous objects
-                columns.clear();
-                dbColumns = new ArrayList<>();
-                table = new Table();
+                    columns.clear();
+                    dbColumns = new ArrayList<>();
+                    table = new Table();
 
-                table.setName(tableName);
-                database.addTable(table);
-            }
-            else if (MetadataToken.CL.name().equals(token)) {
-                String columnName = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-                String dataType = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-                columns.put(columnName, dataType);
-            }
-            else if (MetadataToken.PK.name().equals(token)) {
-                primaryKey = tokenizer.hasMoreTokens() == true ? tokenizer.nextToken() : null;
-                table.setPrimaryKey(new Column(primaryKey, columns.get(primaryKey)));
-            }
-            else if (token == null) {
-                throw new Exception("Malformed metadata file");
+                    table.setName(tableName);
+                    database.addTable(table);
+                    break;
+
+                case PK:
+                    primaryKey = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    table.setPrimaryKey(new Column(primaryKey, columns.get(primaryKey)));
+                    break;
+
+                case CL:
+                    String columnName = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    String dataType = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    columns.put(columnName, dataType);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Malformed metadata file");
             }
         }
 //        Add the last entry
@@ -121,7 +128,7 @@ public class DatabaseMetadataService implements IMetadataService {
         return metadata;
     }
 
-    private boolean validateMetadataEntries(Metadata metadata) {
+    private boolean validate(Metadata metadata) {
         boolean isValid = true;
         if (Objects.isNull(metadata.getDatabase())) {
             isValid = false;
