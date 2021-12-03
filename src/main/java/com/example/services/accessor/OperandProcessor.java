@@ -1,4 +1,4 @@
-package com.example.services.dataAccessor;
+package com.example.services.accessor;
 
 import com.example.models.Condition;
 import com.example.models.Field;

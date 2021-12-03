@@ -5,7 +5,7 @@ import com.example.models.Metadata;
 import com.example.models.Row;
 import com.example.models.TableQuery;
 import com.example.models.enums.TableDMLOperation;
-import com.example.services.dataAccessor.FileDataAccessorImpl;
+import com.example.services.accessor.FileDataAccessorImpl;
 import org.junit.Test;
 
 import java.util.Arrays;
