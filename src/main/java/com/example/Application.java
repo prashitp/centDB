@@ -64,11 +64,11 @@ public class Application {
     }
 
     public static void query(Scanner scanner) {
-
+        System.out.printf("Test");
     }
 
     public static void select(Scanner scanner) {
-        System.out.print("Select an option: \n");
+        System.out.print("\n\nSelect an option: \n");
         System.out.print("1. Register \n");
         System.out.print("2. Login \n");
         System.out.print("3. Quit \n");
@@ -82,6 +82,8 @@ public class Application {
                 break;
             case "2":
                 System.out.print("Login selected \n");
+                login(scanner);
+                query(scanner);
                 break;
             case "3":
                 System.exit(0);
