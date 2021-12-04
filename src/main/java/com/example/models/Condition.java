@@ -1,12 +1,10 @@
 package com.example.models;
 
 import com.example.models.enums.Operator;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 public class Condition {
 

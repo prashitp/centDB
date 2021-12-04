@@ -1,13 +1,13 @@
 package com.example.util;
 
 import com.example.models.Column;
+import com.example.models.Condition;
+import com.example.models.TableQuery;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+
 import static com.example.util.Constants.*;
 
 public class InputOperation {
@@ -64,22 +64,38 @@ public class InputOperation {
         });
     }
 
-    public static void select(String query) {
-        String table;
-        String columnsString = StringUtil.match(query, SELECT, FROM);
+    public static TableQuery select(String query) {
+        String database = "";
+        String table = StringUtil.match(query, FROM);
+        String columnMatch = StringUtil.match(query, SELECT, FROM);
+        List<String> columns = new ArrayList<>();
+        Condition condition = null;
 
-        if (ASTERISK.equals(columnsString)) {
-            List<Column> columns; // get columns from file.
+        if (ASTERISK.equals(columnMatch)) {
+            // get all columns
+        } else {
+            // get specified columns
         }
 
         if (query.contains(WHERE)) {
             table = StringUtil.match(query, FROM, WHERE);
             Operator operator = getOperator(query);
             String column = StringUtil.match(query, WHERE, operator.operatorValue);
-        } else {
-            table = StringUtil.match(query, FROM);
+
+            condition = Condition.builder()
+                    .operand1(table)
+                    .operand2(column)
+                    .operator(operator)
+                    .build();
         }
-        System.out.println(table);
+
+        return TableQuery.builder()
+                .schemaName(database)
+                .tableName(table)
+                .columns(new ArrayList<>())
+                .tableOperation(Operation.SELECT)
+                .conditions(Collections.singletonList(condition))
+                .build();
     }
 
     private static Operator getOperator(String string) {

@@ -1,13 +1,15 @@
 package com.example.models;
 
 import com.example.models.enums.Operation;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Getter
+@Data
+@Builder
 public class TableQuery {
 
     public TableQuery(String schemaName, String tableName, List<Column> requiredColumns, Operation tableOperation) {
