@@ -18,9 +18,9 @@ public class InputOperation {
         List<String> strings = Arrays.asList(query.split(" "));
         Operation operation = Operation.valueOf(strings.get(0).trim().toUpperCase(Locale.ROOT));
 
-        TableProcessor tableProcessor = new TableProcessor(new DatabaseMetadataServiceImpl(), new FileAccessorImpl());
-
         operation.accept(new Operation.OperationVisitor<Void>() {
+            final TableProcessor tableProcessor = new TableProcessor(new DatabaseMetadataServiceImpl(), new FileAccessorImpl());
+
             @Override
             public Void visitCreate() {
                 return null;
@@ -64,28 +64,4 @@ public class InputOperation {
             }
         });
     }
-
-    private static void create(List<String> strings) {
-
-    }
-
-    private static void drop(List<String> strings) {
-
-    }
-
-    private static void delete(List<String> strings) {
-
-    }
-
-    private static void alter(List<String> strings) {
-
-    }
-
-    private static void truncate(List<String> strings) {
-
-    }
-
-
-
-
 }
