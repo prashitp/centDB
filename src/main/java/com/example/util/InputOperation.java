@@ -1,12 +1,16 @@
 package com.example.util;
 
-import com.example.models.Column;
-import com.example.models.Condition;
-import com.example.models.TableQuery;
+import com.example.models.*;
+import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
+import com.example.services.accessor.FileDataAccessorImpl;
+import com.example.services.accessor.TableDataAccessor;
+import com.example.services.metadata.DatabaseMetadataServiceImpl;
+import lombok.SneakyThrows;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.util.Constants.*;
 
@@ -37,8 +41,11 @@ public class InputOperation {
             }
 
             @Override
+            @SneakyThrows
             public Void visitSelect() {
-                select(query);
+                TableQuery tableQuery = select(query);
+                TableDataAccessor tableDataAccessor = new FileDataAccessorImpl();
+                List<Row> rows = tableDataAccessor.read(tableQuery);
                 return null;
             }
 
@@ -66,16 +73,11 @@ public class InputOperation {
 
     public static TableQuery select(String query) {
         String database = "";
-        String table = StringUtil.match(query, FROM);
-        String columnMatch = StringUtil.match(query, SELECT, FROM);
-        List<String> columns = new ArrayList<>();
+        String table;
         Condition condition = null;
 
-        if (ASTERISK.equals(columnMatch)) {
-            // get all columns
-        } else {
-            // get specified columns
-        }
+        Metadata metadata = new DatabaseMetadataServiceImpl().read(Entity.DATABASE, database);
+        List<Column> allColumns = metadata.getAllColumnsForTable(database);
 
         if (query.contains(WHERE)) {
             table = StringUtil.match(query, FROM, WHERE);
@@ -87,15 +89,28 @@ public class InputOperation {
                     .operand2(column)
                     .operator(operator)
                     .build();
+        } else {
+            table = StringUtil.match(query, FROM);
         }
 
         return TableQuery.builder()
                 .schemaName(database)
                 .tableName(table)
-                .columns(new ArrayList<>())
+                .columns(getColumns(StringUtil.match(query, SELECT, FROM), allColumns))
                 .tableOperation(Operation.SELECT)
                 .conditions(Collections.singletonList(condition))
                 .build();
+    }
+
+    private static List<Column> getColumns(String string, List<Column> allColumns) {
+        if (ASTERISK.equals(string)) {
+            return allColumns;
+        }
+
+        List<String> columnStrings = Arrays.asList(string.replaceAll("\\s","").split(","));
+        return allColumns.stream()
+                .filter(e -> columnStrings.contains(e.getName()))
+                .collect(Collectors.toList());
     }
 
     private static Operator getOperator(String string) {

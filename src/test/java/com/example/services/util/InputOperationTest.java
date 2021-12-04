@@ -7,6 +7,6 @@ public class InputOperationTest {
 
     @Test
     public void selectQueryTest() {
-        InputOperation.select("SELECT * FROM users WHERE username = 'adesh'");
+        InputOperation.select("SELECT * FROM users WHERE username = 'test_user'");
     }
 }
