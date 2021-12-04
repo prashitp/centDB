@@ -1,7 +1,9 @@
 package com.example.services.accessor;
 
+import com.example.exceptions.InvalidOperation;
 import com.example.models.*;
 import com.example.models.enums.Entity;
+import com.example.models.enums.Operation;
 import com.example.services.metadata.DatabaseMetadataServiceImpl;
 
 import java.io.IOException;
@@ -23,20 +25,45 @@ public class FileDataAccessorImpl implements FileDataAccessor {
     final static String PATH_SEPARATOR = "/";
 
     private Metadata metadata;
-
     private List<Column> columns;
 
-//    Write given rows to the table file and returns the number of rows affected
+    //    Write given rows to the table file and returns the number of rows affected
     @Override
-    public int writeRowsToTheTable(Table table) {
-        return -1;
+    public int insertRowsToTable(TableQuery query) throws Exception {
+        Operation operation = query.getTableOperation();
+        if (Operation.INSERT.equals(operation)) {
+            throw new InvalidOperation("Invalid operation");
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateRowsOfTable(TableQuery query) throws Exception {
+        Operation operation = query.getTableOperation();
+        if (Operation.UPDATE.equals(operation)) {
+            throw new InvalidOperation("Invalid operation");
+        }
+        return 0;
+    }
+
+    @Override
+    public int deleteRowsOfTable(TableQuery query) throws Exception {
+        Operation operation = query.getTableOperation();
+        if (Operation.DELETE.equals(operation)) {
+            throw new InvalidOperation("Invalid operation");
+        }
+        return 0;
     }
 
 //    This method will read data from data file
 //    Returns the rows as per the column list and operands provided
 //    This method is to be used by query processor
     @Override
-    public List<Row> readDataFromTable(TableQuery query) {
+    public List<Row> readDataFromTable(TableQuery query) throws InvalidOperation {
+        Operation operation = query.getTableOperation();
+        if (Operation.SELECT.equals(operation)) {
+            throw new InvalidOperation("Invalid operation");
+        }
         String schemaName = query.getSchemaName();
         metadata = new DatabaseMetadataServiceImpl().read(Entity.DATABASE, schemaName);
         columns = metadata.getAllColumnsForTable(query.getTableName());
@@ -128,7 +155,6 @@ public class FileDataAccessorImpl implements FileDataAccessor {
                 val.append(c);
             }
         }
-
         columnValues.forEach((k,v) -> System.out.println("{k:" + k + "} {v:" +v + "}"));
         return columnValues;
     }

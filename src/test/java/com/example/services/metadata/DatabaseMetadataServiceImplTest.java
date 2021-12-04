@@ -1,5 +1,6 @@
 package com.example.services.metadata;
 
+import com.example.exceptions.InvalidOperation;
 import com.example.models.Column;
 import com.example.models.Metadata;
 import com.example.models.Row;
@@ -15,7 +16,7 @@ import java.util.List;
 public class DatabaseMetadataServiceImplTest {
 
     @Test
-    public void testDatabaseMetadataService() {
+    public void testDatabaseMetadataService() throws Exception {
         MetadataService metadataService = new DatabaseMetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()

@@ -25,7 +25,12 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
     @Override
-    public boolean write(Metadata metadata) {
+    public boolean write(Entity entity, Metadata metadata) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Entity entity, Metadata metadata) {
         return false;
     }
 
