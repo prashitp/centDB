@@ -1,6 +1,6 @@
 package com.example.models;
 
-import com.example.models.enums.Operators;
+import com.example.models.enums.Operator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +14,5 @@ public class Condition {
 
     String operand2;
 
-    Operators operator;
+    Operator operator;
 }
