@@ -4,6 +4,7 @@ import com.example.models.Column;
 import com.example.models.Database;
 import com.example.models.Metadata;
 import com.example.models.Table;
+import com.example.models.enums.Entity;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,12 +25,12 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
     @Override
-    public boolean writeMetadataToFile(Metadata metadata) {
+    public boolean write(Metadata metadata) {
         return false;
     }
 
     @Override
-    public Metadata readMetadataForDatabase(String databaseName) {
+    public Metadata read(Entity entity, String databaseName) {
         Metadata metadata = new Metadata();
         try {
             metadata = readMetaDataFile(databaseName);
@@ -119,7 +120,7 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
                     throw new IllegalArgumentException("Malformed metadata file");
             }
         }
-//        Add the last entry
+
         dbColumns = columns.keySet().stream().map(k -> new Column(k, columns.get(k))).collect(Collectors.toList());
         table.setColumns(dbColumns);
 

@@ -1,6 +1,6 @@
 package com.example.models;
 
-import com.example.models.enums.TableDMLOperation;
+import com.example.models.enums.Operation;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,23 +10,20 @@ import java.util.Objects;
 @Getter
 public class TableQuery {
 
-    public TableQuery(String schemaName, String tableName, List<Column> requiredColumns, TableDMLOperation tableOperation) {
+    public TableQuery(String schemaName, String tableName, List<Column> requiredColumns, Operation tableOperation) {
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.columns = requiredColumns;
         this.tableOperation = tableOperation;
     }
 
-//    database Name in which the table is present
     private String schemaName;
 
-//    Name of the table from which data is to be fetched
     private String tableName;
 
-//    Columns that are required
     private List<Column> columns;
 
-    private TableDMLOperation tableOperation;
+    private Operation tableOperation;
 
     private List<Condition> conditions;
 
@@ -38,7 +35,7 @@ public class TableQuery {
         return columns;
     }
 
-    public TableDMLOperation getTableOperation() {
+    public Operation getTableOperation() {
         return tableOperation;
     }
 

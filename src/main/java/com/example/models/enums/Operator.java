@@ -2,22 +2,21 @@ package com.example.models.enums;
 
 import com.example.exceptions.UnrecognisedOperator;
 
-public enum Operators {
-
+public enum Operator {
     EQUALS("="),
     LESS_THAN("<"),
     GREATER_THAN(">");
 
     public final String operatorValue;
 
-    Operators(String operatorValue) {
+    Operator(String operatorValue) {
         this.operatorValue = operatorValue;
     }
 
-    public static Operators getOperatorType(String operatorValue) throws UnrecognisedOperator {
-        Operators operator;
+    public static Operator getOperatorType(String operatorValue) throws UnrecognisedOperator {
+        Operator operator;
         try {
-            operator = Operators.valueOf(operatorValue);
+            operator = Operator.valueOf(operatorValue);
         }
         catch (IllegalArgumentException exception) {
             throw new UnrecognisedOperator("Operator " + operatorValue + " is not supported");

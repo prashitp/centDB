@@ -1,4 +1,4 @@
-package com.example.services.input;
+package com.example.services;
 
 import lombok.SneakyThrows;
 

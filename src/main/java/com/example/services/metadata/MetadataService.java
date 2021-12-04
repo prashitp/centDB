@@ -1,11 +1,12 @@
 package com.example.services.metadata;
 
 import com.example.models.Metadata;
+import com.example.models.enums.Entity;
 
 public interface MetadataService {
 
-    Metadata readMetadataForDatabase(String databaseName);
+    Metadata read(Entity entity, String databaseName);
 
-    boolean writeMetadataToFile(Metadata metadata);
+    boolean write(Metadata metadata);
 
 }

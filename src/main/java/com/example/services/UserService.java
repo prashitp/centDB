@@ -1,24 +1,22 @@
-package com.example.services.input;
+package com.example.services;
 
 import com.example.models.User;
 import com.example.persistence.UserDao;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.inject.Inject;
 import java.util.Objects;
 
 public class UserService {
 
     private static SecretKey secretKey = new SecretKeySpec(System.getenv("SECRET_KEY").getBytes(), "AES");
 
-    @Inject
     private UserDao userDao;
 
-    @Inject
     private EncryptionService encryptionService;
 
     public UserService() {
+        this.encryptionService = new EncryptionService();
     }
 
     public UserService(UserDao userDao, EncryptionService encryptionService) {
@@ -32,7 +30,8 @@ public class UserService {
     }
 
     public User login(String username, String password) {
-        String decryptedPassword = encryptionService.decrypt(password, secretKey);
+        String encryptedPassword = encryptionService.encrypt(password, secretKey);
+        String decryptedPassword = encryptionService.decrypt(encryptedPassword, secretKey);
         return User.builder().build();
     }
 
