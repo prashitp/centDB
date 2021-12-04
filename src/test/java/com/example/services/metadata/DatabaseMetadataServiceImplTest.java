@@ -6,10 +6,9 @@ import com.example.models.Row;
 import com.example.models.TableQuery;
 import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
-import com.example.services.accessor.FileDataAccessorImpl;
+import com.example.services.accessor.FileAccessorImpl;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class DatabaseMetadataServiceImplTest {
         List<String> columns = metadata.getAllColumnsNameForTable("BIRDS");
         List<String> tableName = metadata.getAllTableNames();
 
-        FileDataAccessorImpl accessor = new FileDataAccessorImpl();
+        FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.getName();
         TableQuery query = TableQuery.builder()

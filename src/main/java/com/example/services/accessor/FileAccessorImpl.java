@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FileDataAccessorImpl implements TableDataAccessor {
+public class FileAccessorImpl implements TableAccessor {
 
     final static char PIPE_DELIMITER = '|';
     final static char ESCAPE_CHAR = '\\';

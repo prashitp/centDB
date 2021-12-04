@@ -5,7 +5,7 @@ import com.example.models.TableQuery;
 
 import java.util.List;
 
-public interface TableDataAccessor {
+public interface TableAccessor {
 
     List<Row> read(TableQuery query) throws Exception;
 
