@@ -6,6 +6,8 @@ public class Constants {
 
     public static final String ASTERISK = "*";
 
+    public static final String DELIMITER = "|";
+
     public static final String WHERE = "WHERE";
 
     public static final String SELECT = "SELECT";

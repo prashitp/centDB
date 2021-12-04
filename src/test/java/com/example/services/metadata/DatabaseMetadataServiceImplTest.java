@@ -15,7 +15,7 @@ import java.util.List;
 public class DatabaseMetadataServiceImplTest {
 
     @Test
-    public void testDatabaseMetadataService() {
+    public void testDatabaseMetadataService() throws Exception {
         MetadataService metadataService = new DatabaseMetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()
@@ -30,6 +30,6 @@ public class DatabaseMetadataServiceImplTest {
         Column column1 = new Column();
         column1.getName();
         TableQuery query = new TableQuery("CENT_DB1", "BIRDS", Arrays.asList(column1), Operation.SELECT);
-        List<Row> output = accessor.readDataFromTable(query);
+        List<Row> output = accessor.read(query);
     }
 }

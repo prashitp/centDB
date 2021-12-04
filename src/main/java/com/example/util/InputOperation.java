@@ -3,15 +3,11 @@ package com.example.util;
 import com.example.models.Column;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
-import com.sun.org.apache.xpath.internal.operations.Equals;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static com.example.util.Constants.*;
 
 public class InputOperation {

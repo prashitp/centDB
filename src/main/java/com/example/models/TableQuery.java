@@ -27,6 +27,8 @@ public class TableQuery {
 
     private List<Condition> conditions;
 
+    private List<Row> rows;
+
     public String getTableName() {
         return tableName;
     }
@@ -55,6 +57,17 @@ public class TableQuery {
             columns = new ArrayList<>();
         }
         columns.add(columnName);
+    }
+
+    /*
+     *    The rows added here represents all the rows that will be affected by the
+     *    Operation specified in this query
+     */
+    private void addRows(List<Row> rows) {
+        if (Objects.nonNull(rows)) {
+            rows = new ArrayList<>();
+        }
+        rows.addAll(rows);
     }
 
     public String getSchemaName() {
