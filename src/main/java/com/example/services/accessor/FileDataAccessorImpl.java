@@ -26,15 +26,11 @@ public class FileDataAccessorImpl implements FileDataAccessor {
 
     private List<Column> columns;
 
-//    Write given rows to the table file and returns the number of rows affected
     @Override
     public int writeRowsToTheTable(Table table) {
         return -1;
     }
 
-//    This method will read data from data file
-//    Returns the rows as per the column list and operands provided
-//    This method is to be used by query processor
     @Override
     public List<Row> readDataFromTable(TableQuery query) {
         String schemaName = query.getSchemaName();
@@ -67,7 +63,7 @@ public class FileDataAccessorImpl implements FileDataAccessor {
         if (rowValue.size() != columns.size()) {
             System.out.println("Something is wrong here");
         }
-        for (int i=1, j =0 ; i <= rowValue.size(); i++, j++) {
+        for (int i = 1, j = 0; i <= rowValue.size(); i++, j++) {
             String value = rowValue.get(i);
             Column column = columns.get(j);
             Field field = new Field(column, value);
@@ -107,21 +103,21 @@ public class FileDataAccessorImpl implements FileDataAccessor {
         }
         int length = line.length();
 
-        Integer colCount = 0;
+        Integer columnCount = 0;
         StringBuilder val = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             char c = line.charAt(pos);
-            if (PIPE_DELIMITER == c || ESCAPE_CHAR == c || pos == length-1) {
+            if (PIPE_DELIMITER == c || ESCAPE_CHAR == c || pos == length - 1) {
                 if (ESCAPE_CHAR == c && line.charAt(pos+1) == PIPE_DELIMITER) {
                     val.append(PIPE_DELIMITER);
                     pos = pos + 1;
                     continue;
                 }
 //                Adding a column value
-                if (pos == length-1 && PIPE_DELIMITER != c) {
+                if (pos == length - 1 && PIPE_DELIMITER != c) {
                     val.append(c);
                 }
-                final Integer countNo = ++colCount;
+                final Integer countNo = ++columnCount;
                 columnValues.put(countNo, val.toString());
                 val = new StringBuilder();
             } else {
