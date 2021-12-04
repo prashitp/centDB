@@ -16,7 +16,7 @@ public class InputAuthentication {
 
         System.out.print("Enter Password: \n");
         final String password = scanner.nextLine();
-        if (!Validator.isAlphaNumeric(password)) {
+        if (!StringUtil.isAlphaNumeric(password)) {
             System.out.print("Invalid password \n");
             return;
         }

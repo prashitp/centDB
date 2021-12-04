@@ -1,11 +1,18 @@
 package com.example.util;
 
+import com.example.models.Column;
 import com.example.models.enums.Operation;
+import com.example.models.enums.Operator;
+import com.sun.org.apache.xpath.internal.operations.Equals;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.example.util.Constants.*;
 
 public class InputOperation {
 
@@ -35,7 +42,7 @@ public class InputOperation {
 
             @Override
             public Void visitSelect() {
-                select(strings);
+                select(query);
                 return null;
             }
 
@@ -61,9 +68,35 @@ public class InputOperation {
         });
     }
 
-    private static void select(List<String> strings) {
+    public static void select(String query) {
+        String table;
+        String columnsString = StringUtil.match(query, SELECT, FROM);
 
+        if (ASTERISK.equals(columnsString)) {
+            List<Column> columns; // get columns from file.
+        }
+
+        if (query.contains(WHERE)) {
+            table = StringUtil.match(query, FROM, WHERE);
+            Operator operator = getOperator(query);
+            String column = StringUtil.match(query, WHERE, operator.operatorValue);
+        } else {
+            table = StringUtil.match(query, FROM);
+        }
+        System.out.println(table);
     }
+
+    private static Operator getOperator(String string) {
+        Operator result = null;
+        for (Operator operator: Operator.values()) {
+            if (string.contains(operator.operatorValue)) {
+                result = operator;
+            }
+        }
+        return result;
+    }
+
+
 
     private static void create(List<String> strings) {
 
