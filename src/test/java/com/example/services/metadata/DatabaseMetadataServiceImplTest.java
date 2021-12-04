@@ -1,6 +1,5 @@
 package com.example.services.metadata;
 
-import com.example.exceptions.InvalidOperation;
 import com.example.models.Column;
 import com.example.models.Metadata;
 import com.example.models.Row;
@@ -31,6 +30,6 @@ public class DatabaseMetadataServiceImplTest {
         Column column1 = new Column();
         column1.getName();
         TableQuery query = new TableQuery("CENT_DB1", "BIRDS", Arrays.asList(column1), Operation.SELECT);
-        List<Row> output = accessor.readDataFromTable(query);
+        List<Row> output = accessor.read(query);
     }
 }

@@ -59,8 +59,10 @@ public class TableQuery {
         columns.add(columnName);
     }
 
-//    The rows added here represents all the rows that will be affected by the
-//    Operation specified in this query
+    /*
+     *    The rows added here represents all the rows that will be affected by the
+     *    Operation specified in this query
+     */
     private void addRows(List<Row> rows) {
         if (Objects.nonNull(rows)) {
             rows = new ArrayList<>();
