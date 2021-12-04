@@ -10,6 +10,7 @@ import com.example.services.accessor.FileDataAccessorImpl;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DatabaseMetadataServiceImplTest {
@@ -29,7 +30,13 @@ public class DatabaseMetadataServiceImplTest {
         FileDataAccessorImpl accessor = new FileDataAccessorImpl();
         Column column1 = new Column();
         column1.getName();
-        TableQuery query = new TableQuery("CENT_DB1", "BIRDS", Arrays.asList(column1), Operation.SELECT);
+        TableQuery query = TableQuery.builder()
+                .schemaName("CENT_DB1")
+                .tableName("BIRDS")
+                .columns(Collections.singletonList(column1))
+                .tableOperation(Operation.SELECT)
+                .build();
+
         List<Row> output = accessor.read(query);
     }
 }

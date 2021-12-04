@@ -2,22 +2,17 @@ package com.example.models;
 
 import com.example.models.enums.Operation;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class TableQuery {
-
-    public TableQuery(String schemaName, String tableName, List<Column> requiredColumns, Operation tableOperation) {
-        this.schemaName = schemaName;
-        this.tableName = tableName;
-        this.columns = requiredColumns;
-        this.tableOperation = tableOperation;
-    }
 
     private String schemaName;
 

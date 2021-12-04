@@ -5,8 +5,10 @@ import com.example.models.Database;
 import com.example.models.Metadata;
 import com.example.models.Table;
 import com.example.models.enums.Entity;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -20,7 +22,8 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
         DB, TB, CL, PK
     }
 
-    private final static String METADATA_BASE_DIRECTORY = "METADATA/";
+    private final static String RESOURCES = "resources/";
+    private final static String METADATA_BASE_DIRECTORY = "/METADATA/";
     private final static String METADATA_FILE_PREFIX = "MD_";
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
@@ -49,13 +52,15 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
         return metadata;
     }
 
+    @SneakyThrows
     private Metadata readMetaDataFile(String databaseName) {
         Metadata metadata = new Metadata();
         String metadataFileSuffix = databaseName.toUpperCase(Locale.ROOT);
         String metadataFilePathString = METADATA_BASE_DIRECTORY + METADATA_FILE_PREFIX + metadataFileSuffix + METADATA_FILE_EXTENSION;
+        URL metadataFileUrl = DatabaseMetadataServiceImpl.class.getResource(metadataFilePathString);
         System.out.println("Reading metadata from " + metadataFilePathString);
         try {
-            Path metadataFilePath = Paths.get(metadataFilePathString);
+            Path metadataFilePath = Paths.get(metadataFileUrl.toURI());
             List<String> lines = Files.lines(metadataFilePath).collect(Collectors.toList());
             metadata = parseMetadataFile(lines);
         }
