@@ -27,7 +27,7 @@ public class TableProcessorTest {
         TableQuery tableQuery = TableQuery.builder()
                 .tableOperation(Operation.SELECT)
                 .tableName("BIRDS")
-                .schemaName("userData/CENT_DB1")
+                .schemaName("CENT_DB1")
                 .conditions(Collections.singletonList(Condition.builder()
                         .operand1("BIRD_ID")
                         .operator(Operator.EQUALS)

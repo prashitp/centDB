@@ -21,7 +21,7 @@ public class FileAccessorImpl implements TableAccessor {
     final static String TABLE_DATA_FILE_PREFIX = "TB_";
     final static String TABLE_DATA_FILE_SUFFIX = ".txt";
 
-    final static String DATA_BASE_DIRECTORY = "userData";
+    final static String DATA_BASE_DIRECTORY = "storage";
     final static String PATH_SEPARATOR = "/";
 
     private Metadata metadata;

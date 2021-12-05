@@ -17,7 +17,7 @@ public class DatabaseMetadataServiceImplTest {
     @Test
     public void testDatabaseMetadataService() throws Exception {
         MetadataService metadataService = new DatabaseMetadataServiceImpl();
-        Metadata metadata = metadataService.read(Entity.DATABASE, "userData/CENT_DB1");
+        Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()
                 .forEach(table -> {System.out.println("Table:"+ table.getName());
                     table.getColumns().forEach(col -> System.out.println("Column name :" + col.getName()));
@@ -30,7 +30,7 @@ public class DatabaseMetadataServiceImplTest {
         Column column1 = new Column();
         column1.getName();
         TableQuery query = TableQuery.builder()
-                .schemaName("userData/CENT_DB1")
+                .schemaName("CENT_DB1")
                 .tableName("BIRDS")
                 .columns(Collections.singletonList(column1))
                 .tableOperation(Operation.SELECT)
