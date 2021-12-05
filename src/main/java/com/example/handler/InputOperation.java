@@ -1,9 +1,8 @@
 package com.example.handler;
 
-import com.example.models.Metadata;
-import com.example.models.Row;
-import com.example.models.TableQuery;
+import com.example.models.*;
 import com.example.models.enums.Operation;
+import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
 import com.example.services.metadata.DatabaseMetadataServiceImpl;
 import com.example.services.metadata.MetadataService;
@@ -18,12 +17,15 @@ import java.util.*;
 public class InputOperation {
 
     private static Metadata metadata;
+    private static LogService logService;
 
     public static void query(Scanner scanner) {
         QUERY: do {
             try {
                 System.out.print("SQL> ");
                 final String query = scanner.nextLine();
+
+                logService = new LogService();
                 operate(scanner, query.toUpperCase(Locale.ROOT));
             } catch (Exception e) {
                 continue QUERY;
@@ -45,7 +47,9 @@ public class InputOperation {
             @Override
             public Void visitUse() {
                 metadata = databaseParser.use(query);
+                checkDatabase(metadata);
                 System.out.printf("%s selected \n", metadata.getDatabaseName());
+                logService.log("Database Selected");
                 return null;
             }
 
@@ -71,8 +75,12 @@ public class InputOperation {
             @SneakyThrows
             public Void visitSelect() {
                 checkDatabase(metadata);
+                logService.log("Selection started");
                 TableQuery tableQuery = tableParser.select(query, metadata);
                 List<Row> rows = tableProcessor.select(tableQuery);
+
+                LogContext.setTable(getTable(metadata, tableQuery.getTableName()));
+                logService.log("Selection completed");
                 // Logger Logic
                 return null;
             }
@@ -108,6 +116,16 @@ public class InputOperation {
     private static void checkDatabase(Metadata metadata) {
         if (Objects.isNull(metadata)) {
             System.out.print("Please select database \n");
+        } else {
+            LogContext.setMetadata(metadata);
         }
+    }
+
+    private static Table getTable(Metadata metadata, String tableName) {
+        return metadata.getAllTablesFromDatabase()
+                .stream()
+                .filter(e -> e.getName().equalsIgnoreCase(tableName))
+                .findFirst()
+                .get();
     }
 }

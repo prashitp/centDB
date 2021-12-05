@@ -1,5 +1,6 @@
 package com.example.handler;
 
+import com.example.models.LogContext;
 import com.example.models.User;
 import com.example.services.UserService;
 import com.example.util.StringUtil;
@@ -44,6 +45,8 @@ public class InputAuthentication {
         final String password = scanner.nextLine();
 
         User user = userService.login(username, password);
+        LogContext.setUser(user);
+
         if (Objects.nonNull(user)) {
             System.out.print("Login Successful \n");
         }

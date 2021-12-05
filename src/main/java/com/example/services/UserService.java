@@ -32,7 +32,9 @@ public class UserService {
     public User login(String username, String password) {
         String encryptedPassword = encryptionService.encrypt(password, secretKey);
         String decryptedPassword = encryptionService.decrypt(encryptedPassword, secretKey);
-        return User.builder().build();
+        return User.builder()
+                .username(username)
+                .build();
     }
 
     public Boolean isPresent(String username) {
