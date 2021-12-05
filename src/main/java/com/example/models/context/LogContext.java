@@ -1,5 +1,9 @@
-package com.example.models;
+package com.example.models.context;
 
+
+import com.example.models.Metadata;
+import com.example.models.Table;
+import com.example.models.User;
 
 public final class LogContext {
 

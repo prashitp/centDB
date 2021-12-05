@@ -1,6 +1,6 @@
 package com.example.handler;
 
-import com.example.models.LogContext;
+import com.example.models.context.LogContext;
 import com.example.models.User;
 import com.example.services.UserService;
 import com.example.util.StringUtil;

@@ -1,6 +1,6 @@
 package com.example.services;
 
-import com.example.models.LogContext;
+import com.example.models.context.LogContext;
 import com.example.models.Metadata;
 import lombok.SneakyThrows;
 

@@ -21,4 +21,6 @@ public class Constants {
     public static final String INTO = "INTO";
 
     public static final String USE = "USE";
+
+    public static final String START_TRANSACTION = "START TRANSACTION";
 }
