@@ -1,7 +1,8 @@
-package com.example.util;
+package com.example.handler;
 
 import com.example.models.User;
 import com.example.services.UserService;
+import com.example.util.StringUtil;
 
 import java.util.Objects;
 import java.util.Scanner;

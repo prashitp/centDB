@@ -1,8 +1,11 @@
-package com.example.util;
+package com.example.handler;
 
+import com.example.models.Row;
+import com.example.models.TableQuery;
 import com.example.models.enums.Operation;
 import com.example.services.accessor.FileAccessorImpl;
 import com.example.services.metadata.DatabaseMetadataServiceImpl;
+import com.example.services.parser.TableParser;
 import com.example.services.processor.TableProcessor;
 import lombok.SneakyThrows;
 
@@ -19,7 +22,8 @@ public class InputOperation {
         Operation operation = Operation.valueOf(strings.get(0).trim().toUpperCase(Locale.ROOT));
 
         operation.accept(new Operation.OperationVisitor<Void>() {
-            final TableProcessor tableProcessor = new TableProcessor(new DatabaseMetadataServiceImpl(), new FileAccessorImpl());
+            final TableProcessor tableProcessor = new TableProcessor(new FileAccessorImpl());
+            final TableParser tableParser = new TableParser(new DatabaseMetadataServiceImpl());
 
             @Override
             public Void visitCreate() {
@@ -39,7 +43,9 @@ public class InputOperation {
             @Override
             @SneakyThrows
             public Void visitSelect() {
-                tableProcessor.select(query);
+                TableQuery tableQuery = tableParser.select(query);
+                List<Row> rows = tableProcessor.select(tableQuery);
+                // Logger Logic
                 return null;
             }
 
