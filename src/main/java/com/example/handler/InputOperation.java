@@ -5,8 +5,8 @@ import com.example.models.context.LogContext;
 import com.example.models.enums.Operation;
 import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
-import com.example.services.metadata.DatabaseMetadataServiceImpl;
 import com.example.services.metadata.MetadataService;
+import com.example.services.metadata.MetadataServiceImpl;
 import com.example.services.parser.DatabaseParser;
 import com.example.services.parser.TableParser;
 import com.example.services.processor.TableProcessor;
@@ -40,7 +40,7 @@ public class InputOperation {
 
         operation.accept(new Operation.OperationVisitor<Void>() {
 
-            final MetadataService metadataService = new DatabaseMetadataServiceImpl();
+            final MetadataService metadataService = new MetadataServiceImpl();
             final DatabaseParser databaseParser = new DatabaseParser(metadataService);
             final TableProcessor tableProcessor = new TableProcessor(new FileAccessorImpl());
             final TableParser tableParser = new TableParser();

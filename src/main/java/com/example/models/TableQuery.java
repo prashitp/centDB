@@ -20,7 +20,7 @@ public class TableQuery {
 
     private List<Column> columns;
 
-    private List<Column> fields;
+    private List<Field> fields;
 
     private Operation tableOperation;
 
