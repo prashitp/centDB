@@ -13,4 +13,6 @@ public class Constants {
     public static final String SELECT = "SELECT";
 
     public static final String FROM = "FROM";
+
+    public static final String USE = "USE";
 }

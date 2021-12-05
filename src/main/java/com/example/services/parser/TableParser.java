@@ -1,10 +1,8 @@
 package com.example.services.parser;
 
 import com.example.models.*;
-import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
-import com.example.services.metadata.MetadataService;
 import com.example.util.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,15 +18,11 @@ import static com.example.util.Constants.FROM;
 @AllArgsConstructor
 public class TableParser {
 
-    private MetadataService metadataService;
-
     @SneakyThrows
-    public TableQuery select(String query) {
-        String database = "CENT_DB1";
+    public TableQuery select(String query, Metadata metadata) {
         String table;
         Condition condition = null;
         List<Column> allColumns;
-        Metadata metadata = metadataService.read(Entity.DATABASE, database);
 
         if (query.contains(WHERE)) {
             table = StringUtil.match(query, FROM, WHERE);
@@ -47,7 +41,7 @@ public class TableParser {
         allColumns = metadata.getAllColumnsForTable(table);
 
         return TableQuery.builder()
-                .schemaName(database)
+                .schemaName(metadata.getDatabaseName())
                 .tableName(table)
                 .columns(getColumns(StringUtil.match(query, SELECT, FROM), allColumns))
                 .tableOperation(Operation.SELECT)
