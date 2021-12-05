@@ -8,7 +8,6 @@ import com.example.models.enums.Entity;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;

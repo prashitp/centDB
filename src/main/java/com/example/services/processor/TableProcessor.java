@@ -17,6 +17,24 @@ public class TableProcessor {
         return tableAccessor.read(tableQuery);
     }
 
+    @SneakyThrows
+    public Boolean delete(TableQuery tableQuery) {
+        tableAccessor.delete(tableQuery);
+        return true;
+    }
+
+    @SneakyThrows
+    public Boolean update(TableQuery tableQuery) {
+        tableAccessor.update(tableQuery);
+        return true;
+    }
+
+    @SneakyThrows
+    public Boolean insert(TableQuery tableQuery) {
+        tableAccessor.insert(tableQuery);
+        return true;
+    }
+
 
 
 

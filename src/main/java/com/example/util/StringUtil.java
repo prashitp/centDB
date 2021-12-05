@@ -13,7 +13,7 @@ public class StringUtil {
         return find(string, from.concat("(.*?)").concat(to));
     }
 
-    public static String match(String string, String from) {
+    public static String matchFrom(String string, String from) {
         return find(string, from.concat("(.*)"));
     }
 

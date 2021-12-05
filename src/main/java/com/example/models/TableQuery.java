@@ -20,6 +20,8 @@ public class TableQuery {
 
     private List<Column> columns;
 
+    private List<Column> fields;
+
     private Operation tableOperation;
 
     private List<Condition> conditions;

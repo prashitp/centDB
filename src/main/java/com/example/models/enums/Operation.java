@@ -1,6 +1,11 @@
 package com.example.models.enums;
 
 public enum Operation {
+    USE {
+        public <E> E accept(OperationVisitor<E> visitor) {
+            return visitor.visitUse();
+        }
+    },
     CREATE {
         public <E> E accept(OperationVisitor<E> visitor) {
             return visitor.visitCreate();
@@ -52,6 +57,7 @@ public enum Operation {
     public abstract <E> E accept(OperationVisitor<E> visitor);
 
     public interface OperationVisitor<E> {
+        E visitUse();
         E visitCreate();
         E visitDrop();
         E visitInsert();
