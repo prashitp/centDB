@@ -1,21 +1,18 @@
 package com.example.models;
 
 import com.example.models.enums.Operation;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Getter
+@Setter
+@Builder
 public class TableQuery {
-
-    public TableQuery(String schemaName, String tableName, List<Column> requiredColumns, Operation tableOperation) {
-        this.schemaName = schemaName;
-        this.tableName = tableName;
-        this.columns = requiredColumns;
-        this.tableOperation = tableOperation;
-    }
 
     private String schemaName;
 
@@ -23,9 +20,13 @@ public class TableQuery {
 
     private List<Column> columns;
 
+    private List<Column> fields;
+
     private Operation tableOperation;
 
     private List<Condition> conditions;
+
+    private List<Row> rows;
 
     public String getTableName() {
         return tableName;
@@ -55,6 +56,17 @@ public class TableQuery {
             columns = new ArrayList<>();
         }
         columns.add(columnName);
+    }
+
+    /*
+     *    The rows added here represents all the rows that will be affected by the
+     *    Operation specified in this query
+     */
+    private void addRows(List<Row> rows) {
+        if (Objects.nonNull(rows)) {
+            rows = new ArrayList<>();
+        }
+        rows.addAll(rows);
     }
 
     public String getSchemaName() {

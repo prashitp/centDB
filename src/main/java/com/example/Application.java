@@ -1,6 +1,6 @@
 package com.example;
 
-import com.example.util.InputSelection;
+import com.example.handler.InputSelection;
 
 import java.util.*;
 
