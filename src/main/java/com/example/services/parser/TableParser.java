@@ -57,6 +57,17 @@ public class TableParser {
                 .build();
     }
 
+    public TableQuery insert(String query, Metadata metadata) {
+        String table = null;
+
+        return TableQuery.builder()
+                .schemaName(metadata.getDatabaseName())
+                .tableName(table)
+                .tableOperation(Operation.INSERT)
+                .build();
+
+    }
+
     private String getTable(String query, String limiter) {
         String table;
         if (query.contains(WHERE)) {

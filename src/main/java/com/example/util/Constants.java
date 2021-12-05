@@ -16,5 +16,7 @@ public class Constants {
 
     public static final String SET = "SET";
 
+    public static final String INTO = "INTO";
+
     public static final String USE = "USE";
 }

@@ -61,6 +61,9 @@ public class InputOperation {
 
             @Override
             public Void visitInsert() {
+                checkDatabase(metadata);
+                TableQuery tableQuery = tableParser.insert(query, metadata);
+                tableProcessor.insert(tableQuery);
                 return null;
             }
 

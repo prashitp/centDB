@@ -29,6 +29,12 @@ public class TableProcessor {
         return true;
     }
 
+    @SneakyThrows
+    public Boolean insert(TableQuery tableQuery) {
+        tableAccessor.insert(tableQuery);
+        return true;
+    }
+
 
 
 
