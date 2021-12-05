@@ -48,9 +48,9 @@ public enum Operation {
         }
     },
 
-    TRUNCATE {
+    START {
         public <E> E accept(OperationVisitor<E> visitor) {
-            return visitor.visitTruncate();
+            return visitor.visitStartTransaction();
         }
     };
 
@@ -65,7 +65,7 @@ public enum Operation {
         E visitUpdate();
         E visitDelete();
         E visitAlter();
-        E visitTruncate();
+        E visitStartTransaction();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.handler;
 
 import com.example.models.*;
+import com.example.models.context.LogContext;
 import com.example.models.enums.Operation;
 import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
@@ -107,7 +108,7 @@ public class InputOperation {
             }
 
             @Override
-            public Void visitTruncate() {
+            public Void visitStartTransaction() {
                 return null;
             }
         });
