@@ -14,7 +14,7 @@ public class DatabaseParser {
     private MetadataService metadataService;
 
     public Metadata use(String query) {
-        String database = StringUtil.match(query, USE);
+        String database = StringUtil.matchFrom(query, USE);
         return metadataService.read(Entity.DATABASE, database);
     }
 }

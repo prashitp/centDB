@@ -1,6 +1,5 @@
 package com.example.handler;
 
-import com.example.models.Condition;
 import com.example.models.Metadata;
 import com.example.models.Row;
 import com.example.models.TableQuery;
@@ -25,7 +24,7 @@ public class InputOperation {
             try {
                 System.out.print("SQL> ");
                 final String query = scanner.nextLine();
-                operate(scanner, query);
+                operate(scanner, query.toUpperCase(Locale.ROOT));
             } catch (Exception e) {
                 continue QUERY;
             }
@@ -77,11 +76,17 @@ public class InputOperation {
 
             @Override
             public Void visitUpdate() {
+                checkDatabase(metadata);
+                TableQuery tableQuery = tableParser.update(query, metadata);
+                tableProcessor.update(tableQuery);
                 return null;
             }
 
             @Override
             public Void visitDelete() {
+                checkDatabase(metadata);
+                TableQuery tableQuery = tableParser.delete(query, metadata);
+                tableProcessor.delete(tableQuery);
                 return null;
             }
 
