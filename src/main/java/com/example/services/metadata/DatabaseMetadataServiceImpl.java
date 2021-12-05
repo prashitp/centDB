@@ -22,8 +22,7 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
         DB, TB, CL, PK
     }
 
-    private final static String RESOURCES = "resources/";
-    private final static String METADATA_BASE_DIRECTORY = "/METADATA/";
+    private final static String METADATA_BASE_DIRECTORY = "userData/METADATA/";
     private final static String METADATA_FILE_PREFIX = "MD_";
     private final static String METADATA_FILE_EXTENSION = ".txt";
 
@@ -57,10 +56,9 @@ public class DatabaseMetadataServiceImpl implements MetadataService {
         Metadata metadata = new Metadata();
         String metadataFileSuffix = databaseName.toUpperCase(Locale.ROOT);
         String metadataFilePathString = METADATA_BASE_DIRECTORY + METADATA_FILE_PREFIX + metadataFileSuffix + METADATA_FILE_EXTENSION;
-        URL metadataFileUrl = DatabaseMetadataServiceImpl.class.getResource(metadataFilePathString);
         System.out.println("Reading metadata from " + metadataFilePathString);
         try {
-            Path metadataFilePath = Paths.get(metadataFileUrl.toURI());
+            Path metadataFilePath = Paths.get(metadataFilePathString);
             List<String> lines = Files.lines(metadataFilePath).collect(Collectors.toList());
             metadata = parseMetadataFile(lines);
         }
