@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FileDataAccessorImpl implements TableDataAccessor {
+public class FileAccessorImpl implements TableAccessor {
 
     final static char PIPE_DELIMITER = '|';
     final static char ESCAPE_CHAR = '\\';
@@ -136,7 +136,7 @@ public class FileDataAccessorImpl implements TableDataAccessor {
         }
         int length = line.length();
 
-        Integer colCount = 0;
+        Integer columnCount = 0;
         StringBuilder val = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             char c = line.charAt(pos);
@@ -150,7 +150,7 @@ public class FileDataAccessorImpl implements TableDataAccessor {
                 if (pos == length - 1 && PIPE_DELIMITER != c) {
                     val.append(c);
                 }
-                final Integer countNo = ++colCount;
+                final Integer countNo = ++columnCount;
                 columnValues.put(countNo, val.toString());
                 val = new StringBuilder();
             } else {

@@ -1,7 +1,8 @@
-package com.example.util;
+package com.example.handler;
 
 import com.example.models.User;
 import com.example.services.UserService;
+import com.example.util.StringUtil;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class InputAuthentication {
 
         System.out.print("Enter Password: \n");
         final String password = scanner.nextLine();
-        if (!Validator.isAlphaNumeric(password)) {
+        if (!StringUtil.isAlphaNumeric(password)) {
             System.out.print("Invalid password \n");
             return;
         }
