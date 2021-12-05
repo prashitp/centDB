@@ -205,11 +205,9 @@ public class MetadataServiceImpl extends AbstractMetadataService {
 
     private Metadata readMetaDataFile(String databaseName) {
         Metadata metadata = new Metadata();
-        String metadataFileSuffix = databaseName.toUpperCase(Locale.ROOT);
-        String metadataFilePathString = METADATA_BASE_DIRECTORY + METADATA_FILE_PREFIX + metadataFileSuffix + METADATA_FILE_EXTENSION;
-        System.out.println("Reading metadata from " + metadataFilePathString);
+        String metadataFile = getMetadataFilePath(databaseName);
         try {
-            Path metadataFilePath = Paths.get(metadataFilePathString);
+            Path metadataFilePath = Paths.get(metadataFile);
             List<String> lines = Files.lines(metadataFilePath).collect(Collectors.toList());
             metadata = parseMetadataFile(lines);
         }

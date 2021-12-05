@@ -15,8 +15,8 @@ public abstract class AbstractMetadataService implements MetadataService {
     }
 
     protected final static char PIPE_DELIMITER = '|';
-    protected final static String DATA_BASE_DIRECTORY = "userData/";
-    protected final static String METADATA_BASE_DIRECTORY = "metadata/";
+    protected final static String DATA_BASE_DIRECTORY = "storage/";
+    protected final static String METADATA_BASE_DIRECTORY = "storage/METADATA/";
     protected final static String METADATA_FILE_PREFIX = "MD_";
     protected final static String METADATA_FILE_EXTENSION = ".txt";
     protected final static String PATH_SEPARATOR = "/";
