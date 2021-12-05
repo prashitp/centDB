@@ -18,7 +18,7 @@ public class InputOperation {
         System.out.print("SQL> \n");
         final String query = scanner.nextLine();
 
-        List<String> strings = Arrays.asList(query.split(" "));
+        List<String> strings = Arrays.asList(query.split("\\s"));
         Operation operation = Operation.valueOf(strings.get(0).trim().toUpperCase(Locale.ROOT));
 
         operation.accept(new Operation.OperationVisitor<Void>() {
