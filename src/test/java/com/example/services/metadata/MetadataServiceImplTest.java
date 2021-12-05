@@ -3,7 +3,8 @@ package com.example.services.metadata;
 import com.example.models.*;
 import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
-import com.example.services.accessor.FileDataAccessorImpl;
+import com.example.services.accessor.FileAccessorImpl;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.List;
 public class MetadataServiceImplTest {
 
     @Test
+    @SneakyThrows
     public void testDatabaseMetadataService() {
         MetadataService metadataService = new MetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
@@ -23,11 +25,16 @@ public class MetadataServiceImplTest {
         List<String> columns = metadata.getAllColumnsNameForTable("BIRDS");
         List<String> tableName = metadata.getAllTableNames();
 
-        FileDataAccessorImpl accessor = new FileDataAccessorImpl();
+        FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.getName();
-        TableQuery query = new TableQuery("CENT_DB1", "BIRDS", Arrays.asList(column1), Operation.SELECT);
-        List<Row> output = accessor.readDataFromTable(query);
+        TableQuery query = TableQuery.builder()
+                .tableName("CENT_DB1")
+                .columns(Arrays.asList(column1))
+                .tableName("BIRDS")
+                .tableOperation(Operation.SELECT)
+                .build();
+        List<Row> output = accessor.read(query);
     }
 
     @Test
@@ -51,9 +58,9 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(id, firstName, lastName, email);
+        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
         Table table = Table.builder().name(tableName).columns(columns).build();
-        database.setTables(List.of(table));
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
@@ -71,9 +78,9 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(id, firstName, lastName, email);
+        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
         Table table = Table.builder().name(tableName).columns(columns).build();
-        database.setTables(List.of(table));
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();

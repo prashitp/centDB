@@ -137,7 +137,7 @@ public class MetadataServiceImpl extends AbstractMetadataService {
 
     private void deleteDirectory(Database database) throws Exception {
         String dirPath = getDirectoryPath(database);
-        Path dbDirectory = Path.of(dirPath);
+        Path dbDirectory = Paths.get(dirPath);
         try {
             Files.walk(dbDirectory).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         } catch (IOException ioException) {
