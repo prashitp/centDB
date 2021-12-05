@@ -1,0 +1,12 @@
+Execution Time: 2021-12-05 at 02:32:17 AST, Database (2): CENT_DB1, Database Selected
+Execution Time: 2021-12-05 at 02:32:26 AST, Database (2): CENT_DB1, Selection started
+Execution Time: 2021-12-05 at 02:32:26 AST, Database (2): CENT_DB1, Selection completed
+User: null, Execution Time: 2021-12-05 at 02:42:50 AST, Database (2): CENT_DB1, Database Selected
+User: null, Execution Time: 2021-12-05 at 02:43:01 AST, Database (2): CENT_DB1, Selection started
+User: null, Execution Time: 2021-12-05 at 02:43:01 AST, Database (2): CENT_DB1, Table: BIRDS Selection completed
+User: null, Execution Time: 2021-12-05 at 02:44:20 AST, Database (2): CENT_DB1, Message: Database Selected
+User: null, Execution Time: 2021-12-05 at 02:44:26 AST, Database (2): CENT_DB1, Message: Selection started
+User: null, Execution Time: 2021-12-05 at 02:44:26 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: SHERRIN, Execution Time: 2021-12-05 at 02:47:27 AST, Database (2): CENT_DB1, Message: Database Selected
+User: SHERRIN, Execution Time: 2021-12-05 at 02:47:33 AST, Database (2): CENT_DB1, Message: Selection started
+User: SHERRIN, Execution Time: 2021-12-05 at 02:47:33 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed

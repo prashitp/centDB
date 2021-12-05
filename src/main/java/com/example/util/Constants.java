@@ -4,6 +4,8 @@ public class Constants {
 
     private Constants() {}
 
+    public static final String STORAGE_PATH = "storage";
+
     public static final String ASTERISK = "*";
 
     public static final String DELIMITER = "|";
