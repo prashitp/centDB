@@ -2,7 +2,7 @@ package com.example.services.accessor;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
-import com.example.services.metadata.DatabaseMetadataServiceImpl;
+import com.example.services.metadata.MetadataServiceImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +38,7 @@ public class FileDataAccessorImpl implements FileDataAccessor {
     @Override
     public List<Row> readDataFromTable(TableQuery query) {
         String schemaName = query.getSchemaName();
-        metadata = new DatabaseMetadataServiceImpl().read(Entity.DATABASE, schemaName);
+        metadata = new MetadataServiceImpl().read(Entity.DATABASE, schemaName);
         columns = metadata.getAllColumnsForTable(query.getTableName());
         List<Row> rows = new ArrayList<>();
 
