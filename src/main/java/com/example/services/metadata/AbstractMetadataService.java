@@ -11,7 +11,7 @@ import java.util.Locale;
 public abstract class AbstractMetadataService implements MetadataService {
 
     protected enum MetadataToken {
-        DB, TB, CL, PK
+        DB, TB, CL, PK, FK
     }
 
     protected final static char PIPE_DELIMITER = '|';

@@ -1,9 +1,6 @@
 package com.example.services.metadata;
 
-import com.example.models.Column;
-import com.example.models.Database;
-import com.example.models.Metadata;
-import com.example.models.Table;
+import com.example.models.*;
 import com.example.models.enums.Entity;
 
 import java.io.File;
@@ -235,6 +232,9 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         List<Column> dbColumns;
 
         for (String line: lines) {
+            if (Objects.isNull(line) || (line.isBlank())) {
+                continue;
+            }
             StringTokenizer tokenizer = new StringTokenizer(line, "|");
             String token = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
 
@@ -273,6 +273,15 @@ public class MetadataServiceImpl extends AbstractMetadataService {
                     String dataType = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
                     columns.put(columnName, dataType);
                     break;
+
+                case FK:
+                    String foreignKeyColumn = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    String referenceTableName = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    String referenceColumnName = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+                    ForeignKey foreignKey = new ForeignKey(foreignKeyColumn, referenceTableName, referenceColumnName);
+                    table.addForeignKey(foreignKey);
+                    break;
+
                 default:
                     throw new IllegalArgumentException("Malformed metadata file");
             }

@@ -5,18 +5,26 @@ import com.example.models.enums.Entity;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MetadataServiceImplTest {
 
     @Test
-    public void testDatabaseMetadataService() throws Exception {
+    public void testDatabaseMetadataService() {
         MetadataService metadataService = new MetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()
-                .forEach(table -> {System.out.println("Table:"+ table.getName());
-                    table.getColumns().forEach(col -> System.out.println("Column name :" + col.getName()));
+                .forEach(table -> {
+                    System.out.println("Table:"+ table.getName());
+                    table.getColumns().forEach(col -> System.out.println("Column name :" + col));
+                    System.out.println("Primary Key:" + table.getPrimaryKey());
+                    Optional.ofNullable(table.getForeignKeys())
+                            .ifPresent(foreignKeys -> foreignKeys.forEach((foreignKey -> {
+                        System.out.println("Foreign Key Column Name:" + foreignKey.getForeignKeyColumn());
+                        System.out.println("Foreign Key Column Reference table:" + foreignKey.getReferenceTableName());
+                        System.out.println("Foreign Key Column Reference column:" + foreignKey.getReferenceColumnName());
+                    })));
                 });
-
         List<String> columns = metadata.getAllColumnsNameForTable("BIRDS");
         List<String> tableName = metadata.getAllTableNames();
     }
