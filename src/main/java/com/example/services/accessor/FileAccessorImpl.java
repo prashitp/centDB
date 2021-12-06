@@ -63,7 +63,7 @@ public class FileAccessorImpl implements TableAccessor {
      *  This method is to be used by query processor
      */
     @Override
-    public List<Row> read(TableQuery query) throws InvalidOperation {
+    public List<Row> read(TableQuery query) throws Exception {
         Operation operation = query.getTableOperation();
         if (!Operation.SELECT.equals(operation)) {
             throw new InvalidOperation("Invalid operation");
@@ -84,8 +84,10 @@ public class FileAccessorImpl implements TableAccessor {
                     .map(line -> getColumnValuesFromRowLines(line))
                     .map(map -> generateRow(map))
                     .filter(Objects::nonNull)
+                    .filter(row -> filterRow(row, query.getConditions()))
+                    .map(row -> getRequiredColumns(row, query.getColumns()))
                     .collect(Collectors.toList());
-        } catch (IOException ioException) {
+        } catch (Exception ioException) {
             ioException.printStackTrace();
             System.out.println("Exception while reading file " + dataFilePath);
         }
@@ -104,26 +106,36 @@ public class FileAccessorImpl implements TableAccessor {
             Field field = new Field(column, value);
             row.addField(field);
         }
-        row.getAllFieldsOfTheRow().stream().forEach(field -> System.out.println("Column:" + field.getColumn().getName() +
-                " Value :" + field.getValue()));
+//        row.getAllFieldsOfRow().stream().forEach(field -> System.out.println("Column:" + field.getColumn().getName() +
+//                " Value :" + field.getValue()));
         return row;
     }
 
-    //        Write logic here to filter the required columns from the Table query
-//        And the Conditions of the query
-    private Row getRequiredRows(Row row, TableQuery query) {
-        if (query.getColumns().isEmpty()) {
+    private boolean filterRow(Row row, List<Condition> conditions) {
+        if (Objects.isNull(conditions) || conditions.isEmpty()) {
+            return true;
+        }
+        boolean matchesCondition = false;
+        OperandProcessor processor = new OperandProcessorImpl();
+        for (Field field : row.getAllFieldsOfRow()) {
+            for (Condition condition : conditions) {
+                if (condition.getOperand1().equalsIgnoreCase(field.getColumn().getName())) {
+                    matchesCondition = processor.process(field, condition);
+                }
+            }
+        }
+        return matchesCondition;
+    }
+
+    private Row getRequiredColumns(Row row, List<Column> requiredColumns) {
+        if (requiredColumns.isEmpty()) {
             return new Row(row);
         }
-        List<String> requiredColumns = query.getColumns().stream().map(c -> c.getName()).collect(Collectors.toList());
-        List<Condition> conditions = query.getConditions();
         Row requiredRow = new Row();
-        for (Field field : row.getAllFieldsOfTheRow()) {
-            for (Condition condition : conditions) {
-//                Process operand
-//                User interface IOperandProcessor (its under implementation)
-            }
-            if (requiredColumns.contains(field.getColumn().getName())) {
+        List<String> columnNames = requiredColumns.stream()
+                .map(c -> c.getName()).distinct().collect(Collectors.toList());
+        for (Field field : row.getAllFieldsOfRow()) {
+            if (columnNames.contains(field.getColumn().getName())) {
                 requiredRow.addField(field);
             }
         }
@@ -131,7 +143,6 @@ public class FileAccessorImpl implements TableAccessor {
     }
 
     private Map<Integer, String> getColumnValuesFromRowLines(String line) {
-
         Map<Integer, String> columnValues = new HashMap<>();
         if (Objects.nonNull(line) && line.isEmpty()) {
             return columnValues;
@@ -159,7 +170,7 @@ public class FileAccessorImpl implements TableAccessor {
                 val.append(c);
             }
         }
-        columnValues.forEach((k, v) -> System.out.println("{k:" + k + "} {v:" + v + "}"));
+//        columnValues.forEach((k, v) -> System.out.println("{k:" + k + "} {v:" + v + "}"));
         return columnValues;
     }
 

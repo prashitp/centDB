@@ -231,7 +231,7 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         Database database = new Database();
         Table table = new Table();
 
-        Map<String, String> columns = new HashMap<>();
+        Map<String, String> columns = new LinkedHashMap<>();
         List<Column> dbColumns;
 
         for (String line: lines) {

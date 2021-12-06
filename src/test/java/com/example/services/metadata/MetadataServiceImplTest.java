@@ -2,17 +2,14 @@ package com.example.services.metadata;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
-import com.example.models.enums.Operation;
-import com.example.services.accessor.FileDataAccessorImpl;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MetadataServiceImplTest {
 
     @Test
-    public void testDatabaseMetadataService() {
+    public void testDatabaseMetadataService() throws Exception {
         MetadataService metadataService = new MetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()
@@ -22,12 +19,6 @@ public class MetadataServiceImplTest {
 
         List<String> columns = metadata.getAllColumnsNameForTable("BIRDS");
         List<String> tableName = metadata.getAllTableNames();
-
-        FileDataAccessorImpl accessor = new FileDataAccessorImpl();
-        Column column1 = new Column();
-        column1.getName();
-        TableQuery query = new TableQuery("CENT_DB1", "BIRDS", Arrays.asList(column1), Operation.SELECT);
-        List<Row> output = accessor.readDataFromTable(query);
     }
 
     @Test
