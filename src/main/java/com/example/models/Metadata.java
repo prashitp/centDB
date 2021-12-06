@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -31,7 +32,7 @@ public class Metadata {
 
     public List<Column> getAllColumnsForTable(String tableName) {
         List<Column> columns = new ArrayList<>();
-        if (database.getTables().isEmpty()) {
+        if (Objects.isNull(database.getTables()) || database.getTables().isEmpty()) {
             return columns;
         }
         Optional<Table> table = database.getTables().stream().filter(t -> t.getName().equalsIgnoreCase(tableName)).findFirst();
@@ -48,6 +49,18 @@ public class Metadata {
             table.ifPresent(t -> t.getColumns().forEach(c -> columnNames.add(c.getName())));
         }
         return columnNames;
+    }
+
+    public Table getTableByName(String tableName) {
+        Table table;
+        if (Objects.isNull(database.getTables()) || database.getTables().isEmpty()) {
+            return null;
+        } else {
+            Optional<Table> optionalTable = database.getTables().stream().filter(t -> t.getName().equalsIgnoreCase(tableName))
+                    .findFirst();
+            table = optionalTable.isPresent() ? optionalTable.get() : null;
+        }
+        return table;
     }
 
 }

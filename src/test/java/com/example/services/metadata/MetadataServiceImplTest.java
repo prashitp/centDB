@@ -41,6 +41,7 @@ public class MetadataServiceImplTest {
 
     @Test
     public void createTable() throws Exception {
+//        CREATE TABLE STUDENT
         String dbName = "DB2";
         String tableName = "STUDENT";
         String INTEGER = "INTEGER";
@@ -51,7 +52,30 @@ public class MetadataServiceImplTest {
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
         List<Column> columns = List.of(id, firstName, lastName, email);
-        Table table = Table.builder().name(tableName).columns(columns).build();
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+        database.setTables(List.of(table));
+        Metadata metadata = new Metadata();
+        metadata.setDatabase(database);
+        MetadataService metadataService = new MetadataServiceImpl();
+        metadataService.write(Entity.TABLE, metadata);
+    }
+
+    @Test
+    public void createTableWithForeignKey() throws Exception {
+//        CREATE TABLE STUDENT_CONTACT
+        String dbName = "DB2";
+        String tableName = "STUDENT_CONTACT";
+        String INTEGER = "INTEGER";
+        String VARCHAR ="VARCHAR";
+        Column contactId = Column.builder().name("CONTACT_ID").dataType(INTEGER).build();
+        Column phoneNumber = Column.builder().name("PHONE_NUMBER").dataType(VARCHAR).build();
+        Column studentId = Column.builder().name("STUDENT_ID").dataType(VARCHAR).build();
+        ForeignKey foreignKey = ForeignKey.builder().foreignKeyColumn("STUDENT_ID")
+                                                    .referenceTableName("STUDENT")
+                                                    .referenceColumnName("ID").build();
+        Database database = Database.builder().name(dbName).build();
+        List<Column> columns = List.of(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
         database.setTables(List.of(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
@@ -61,6 +85,7 @@ public class MetadataServiceImplTest {
 
     @Test
     public void deleteTable() throws Exception {
+//        DROP TABLE STUDENT
         String dbName = "DB2";
         String tableName = "STUDENT";
         String INTEGER = "INTEGER";
@@ -71,7 +96,30 @@ public class MetadataServiceImplTest {
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
         List<Column> columns = List.of(id, firstName, lastName, email);
-        Table table = Table.builder().name(tableName).columns(columns).build();
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+        database.setTables(List.of(table));
+        Metadata metadata = new Metadata();
+        metadata.setDatabase(database);
+        MetadataService metadataService = new MetadataServiceImpl();
+        metadataService.delete(Entity.TABLE, metadata);
+    }
+
+    @Test
+    public void deleteTableWithForeignKey() throws Exception {
+//        DROP TABLE STUDENT_CONTACT
+        String dbName = "DB2";
+        String tableName = "STUDENT_CONTACT";
+        String INTEGER = "INTEGER";
+        String VARCHAR ="VARCHAR";
+        Column contactId = Column.builder().name("CONTACT_ID").dataType(INTEGER).build();
+        Column phoneNumber = Column.builder().name("PHONE_NUMBER").dataType(VARCHAR).build();
+        Column studentId = Column.builder().name("STUDENT_ID").dataType(VARCHAR).build();
+        ForeignKey foreignKey = ForeignKey.builder().foreignKeyColumn("STUDENT_ID")
+                .referenceTableName("STUDENT")
+                .referenceColumnName("ID").build();
+        Database database = Database.builder().name(dbName).build();
+        List<Column> columns = List.of(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
         database.setTables(List.of(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);

@@ -32,4 +32,14 @@ public class Table {
         foreignKeys.add(foreignKey);
     }
 
+    public boolean hasForeignKey() {
+        if (Objects.isNull(foreignKeys) || foreignKeys.isEmpty()) {
+            return false;
+        }
+        else if (foreignKeys.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

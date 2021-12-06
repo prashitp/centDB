@@ -92,8 +92,9 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         List<String> entries = new ArrayList<>();
         entries.add(entryBuilder(table));
         table.getColumns().forEach(column -> entries.add(entryBuilder(column)));
-        Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> entryBuilderPrimaryKey(table.getPrimaryKey()));
-
+        Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> entries.add(entryBuilderPrimaryKey(table.getPrimaryKey())));
+        Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
+                foreignKeys.forEach(foreignKey -> entries.add(entryBuilder(foreignKey))));
         return appendToFile(metadataFilePath, entries);
     }
 
@@ -170,9 +171,9 @@ public class MetadataServiceImpl extends AbstractMetadataService {
     private void deleteMetadata(Database database, Table table) throws Exception {
         String metadataFile = getMetadataFilePath(database.getName());
         Path metadataPath = Paths.get(metadataFile);
-        List<String> entries = new ArrayList<>();
+        List<String> allEntries = new ArrayList<>();
         try {
-            entries = Files.lines(metadataPath).collect(Collectors.toList());
+            allEntries = Files.lines(metadataPath).collect(Collectors.toList());
         } catch (IOException ioException) {
             throw new Exception("Error deleting table " + table.getName());
         }
@@ -180,9 +181,18 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         tableEntries.add(entryBuilder(table));
         table.getColumns().forEach(column -> tableEntries.add(entryBuilder(column)));
         Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> tableEntries.add(entryBuilderPrimaryKey(column)));
-        entries.removeAll(tableEntries);
-
-        Files.write(metadataPath, entries);
+        Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
+                foreignKeys.forEach(foreignKey -> tableEntries.add(entryBuilder(foreignKey))));
+        for (int i=0, j=0; i < allEntries.size() && j < tableEntries.size(); i++) {
+            String allEntry = allEntries.get(i);
+            String tableEntry = tableEntries.get(j);
+            if (tableEntry.equalsIgnoreCase(allEntry)) {
+                allEntries.remove(i);
+                j++;
+                i--;
+            }
+        }
+        Files.write(metadataPath, allEntries);
     }
 
     @Override

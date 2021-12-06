@@ -1,9 +1,6 @@
 package com.example.services.metadata;
 
-import com.example.models.Column;
-import com.example.models.Database;
-import com.example.models.Metadata;
-import com.example.models.Table;
+import com.example.models.*;
 import com.example.models.enums.Entity;
 
 import java.util.Locale;
@@ -35,25 +32,36 @@ public abstract class AbstractMetadataService implements MetadataService {
 
     protected String entryBuilder(Database database) {
         return new StringBuilder()
-                .append(MetadataServiceImpl.MetadataToken.DB.name())
+                .append(MetadataToken.DB.name())
                 .append(PIPE_DELIMITER)
                 .append(database.getName().toUpperCase(Locale.ROOT)).toString();
     }
 
     protected String entryBuilder(Table table) {
         return new StringBuilder()
-                .append(MetadataServiceImpl.MetadataToken.TB.name())
+                .append(MetadataToken.TB.name())
                 .append(PIPE_DELIMITER)
                 .append(table.getName().toUpperCase(Locale.ROOT)).toString();
     }
 
     protected String entryBuilder(Column column) {
         return new StringBuilder()
-                .append(MetadataServiceImpl.MetadataToken.CL)
+                .append(MetadataToken.CL)
                 .append(PIPE_DELIMITER)
                 .append(column.getName().toUpperCase(Locale.ROOT))
                 .append(PIPE_DELIMITER)
                 .append(column.getDataType().toUpperCase(Locale.ROOT)).toString();
+    }
+
+    protected String entryBuilder(ForeignKey foreignKey) {
+        return new StringBuilder()
+                .append(MetadataToken.FK)
+                .append(PIPE_DELIMITER)
+                .append(foreignKey.getForeignKeyColumn().toUpperCase(Locale.ROOT))
+                .append(PIPE_DELIMITER)
+                .append(foreignKey.getReferenceTableName())
+                .append(PIPE_DELIMITER)
+                .append(foreignKey.getReferenceColumnName()).toString();
     }
 
     protected String entryBuilderPrimaryKey(Column column) {
