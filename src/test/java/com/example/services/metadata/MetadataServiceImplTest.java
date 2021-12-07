@@ -2,6 +2,7 @@ package com.example.services.metadata;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 import java.util.List;
