@@ -8,6 +8,8 @@ public class Constants {
 
     public static final String ASTERISK = "*";
 
+    public static final String COMMA = ",";
+
     public static final String DELIMITER = "|";
 
     public static final String WHERE = "WHERE";
@@ -18,7 +20,11 @@ public class Constants {
 
     public static final String SET = "SET";
 
+    public static final String UPDATE = "UPDATE";
+
     public static final String INTO = "INTO";
+
+    public static final String VALUES = "VALUES";
 
     public static final String USE = "USE";
 

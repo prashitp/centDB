@@ -44,7 +44,7 @@ public class FileAccessorImplTest extends TestCase {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("COMMON_NAME").operand2("BirdCommonName2").operator(Operator.EQUALS).build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
         List<Row> output = accessor.read(query);
         Assert.assertTrue(output.size() == 1);
         Row row = output.get(0);
@@ -61,7 +61,7 @@ public class FileAccessorImplTest extends TestCase {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.EQUALS).operand2("5").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
         List<Row> output = accessor.read(query);
         Assert.assertTrue(output.size() == 1);
         Row row = output.get(0);
@@ -79,7 +79,7 @@ public class FileAccessorImplTest extends TestCase {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.GREATER_THAN).operand2("2").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
         List<Row> output = accessor.read(query);
         Assert.assertTrue(output.size() == 4);
         Row row = output.get(0);
@@ -97,7 +97,7 @@ public class FileAccessorImplTest extends TestCase {
         column3.setName("COMMON_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.LESS_THAN).operand2("2").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
+                .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
         List<Row> output = accessor.read(query);
         Assert.assertTrue(output.size() == 1);
         Row row = output.get(0);

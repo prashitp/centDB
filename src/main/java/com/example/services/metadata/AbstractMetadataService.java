@@ -2,14 +2,11 @@ package com.example.services.metadata;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
+import com.example.models.enums.MetadataToken;
 
 import java.util.Locale;
 
 public abstract class AbstractMetadataService implements MetadataService {
-
-    protected enum MetadataToken {
-        DB, TB, CL, PK, FK
-    }
 
     protected final static char PIPE_DELIMITER = '|';
     protected final static String DATA_BASE_DIRECTORY = "storage/";
