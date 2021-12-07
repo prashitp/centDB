@@ -10,6 +10,7 @@ import java.util.Optional;
 public class MetadataServiceImplTest {
 
     @Test
+    @SneakyThrows
     public void testDatabaseMetadataService() {
         MetadataService metadataService = new MetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
