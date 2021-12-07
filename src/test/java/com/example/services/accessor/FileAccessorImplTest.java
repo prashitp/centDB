@@ -4,20 +4,22 @@ import com.example.models.*;
 import com.example.models.enums.Datatype;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class FileAccessorImplTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class FileAccessorImplTest {
 
     private static final String SCHEMA_NAME = "CENT_DB1";
     private static final String TABLE_NAME = "BIRDS";
 
     @Test
     public void testSelectWithoutCondition() throws Exception {
+//        SELECT * FROM BIRDS;
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -28,13 +30,14 @@ public class FileAccessorImplTest extends TestCase {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).build();
         List<Row> output = accessor.read(query);
-        Assert.assertTrue(output.size() >= 6);
+        Assert.assertTrue(output.size() >= 5);
         Row row = output.get(0);
         assertEquals(3, row.getAllFieldsOfRow().size());
     }
 
     @Test
     public void testSelectWithVarcharCondition() throws Exception {
+//        SELECT COMMON_NAME, SCIENTIFIC_NAME WHERE COMMON_NAME = 'BirdCommonName2'
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("COMMON_NAME");
@@ -44,14 +47,35 @@ public class FileAccessorImplTest extends TestCase {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
-        Assert.assertTrue(output.size() == 1);
+        assertEquals(1, output.size());
         Row row = output.get(0);
         assertEquals(2, row.getAllFieldsOfRow().size());
-        Assert.assertEquals("BirdCommonName2", row.getFieldByColumnName("COMMON_NAME").getValue());
+        assertEquals("BirdCommonName2", row.getFieldByColumnName("COMMON_NAME").getValue());
+    }
+
+    @Test
+    public void testSelectWithVarcharNullCondition() throws Exception {
+//        SELECT BIRD_ID, SCIENTIFIC_NAME FROM BIRDS WHERE SCIENTIFIC_NAME = NULL
+        FileAccessorImpl accessor = new FileAccessorImpl();
+        Column column1 = new Column();
+        column1.setName("BIRD_ID");
+        Column column2 = new Column();
+        column2.setName("SCIENTIFIC_NAME");
+        Column column3 = new Column();
+        column3.setName("COMMON_NAME");
+        Condition condition = Condition.builder().operand1("SCIENTIFIC_NAME").operator(Operator.EQUALS).operand2("NULL").build();
+        TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
+                .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
+        List<Row> output = accessor.read(query);
+        Assert.assertTrue(output.size() >= 1);
+        Row row = output.get(0);
+        assertEquals(3, row.getAllFieldsOfRow().size());
+        assertEquals("BirdCommonName4", row.getFieldByColumnName("COMMON_NAME").getValue());
     }
 
     @Test
     public void testSelectWithEqualsIntegerCondition() throws Exception {
+//        SELECT BIRD_ID, SCIENTIFIC_NAME FROM BIRDS WHERE BIRD_ID = 5
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -61,15 +85,16 @@ public class FileAccessorImplTest extends TestCase {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
-        Assert.assertTrue(output.size() == 1);
+        assertEquals(1, output.size());
         Row row = output.get(0);
         assertEquals(2, row.getAllFieldsOfRow().size());
-        Assert.assertEquals("5", row.getFieldByColumnName("BIRD_ID").getValue());
-        Assert.assertEquals("BirdScientificName5", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
+        assertEquals("5", row.getFieldByColumnName("BIRD_ID").getValue());
+        assertEquals("BirdScientificName5", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
     }
 
     @Test
     public void testSelectWithGreaterThanIntegerCondition() throws Exception {
+//        SELECT BIRD_ID, SCIENTIFIC_NAME FROM BIRDS WHERE BIRD_ID > 2
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -86,6 +111,7 @@ public class FileAccessorImplTest extends TestCase {
 
     @Test
     public void testSelectWithLessThanIntegerCondition() throws Exception {
+//        SELECT BIRD_ID, SCIENTIFIC_NAME, COMMON_NAME FROM BIRDS WHERE BIRD_ID < 2
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -97,15 +123,16 @@ public class FileAccessorImplTest extends TestCase {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
-        Assert.assertTrue(output.size() == 1);
+        assertEquals(1, output.size());
         Row row = output.get(0);
         assertEquals(3, row.getAllFieldsOfRow().size());
-        Assert.assertEquals("1", row.getFieldByColumnName("BIRD_ID").getValue());
-        Assert.assertEquals("BirdScientificName1", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
+        assertEquals("1", row.getFieldByColumnName("BIRD_ID").getValue());
+        assertEquals("BirdScientificName1", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
     }
 
     @Test
     public void testInsertToTable() throws Exception {
+//        INSERT INTO BIRDS ('BIRD_ID', 'SCIENTIFIC_NAME', 'COMMON_NAME') VALUES (7, 'Gavia stellata', 'Red-throated diver');
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -127,6 +154,7 @@ public class FileAccessorImplTest extends TestCase {
 
     @Test
     public void testInsertWithColumnValueHavingDelimiter() throws Exception {
+//        INSERT INTO BIRDS ('BIRD_ID', 'SCIENTIFIC_NAME', 'COMMON_NAME') VALUES (7, 'Morus|bassanus', 'Gannet');
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -148,6 +176,7 @@ public class FileAccessorImplTest extends TestCase {
 
     @Test
     public void testSelectWithValueHavingDelimiter() throws Exception {
+//        SELECT BIRD_ID, SCIENTIFIC_NAME, COMMON_NAME FROM BIRDS WHERE SCIENTIFIC_NAME = 'Morus|bassanus'
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -159,14 +188,15 @@ public class FileAccessorImplTest extends TestCase {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
-        Assert.assertTrue(output.size() == 1);
+        assertEquals(1, output.size());
         Row row = output.get(0);
         assertEquals(3, row.getAllFieldsOfRow().size());
-        Assert.assertEquals("Morus|bassanus", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
+        assertEquals("Morus|bassanus", row.getFieldByColumnName("SCIENTIFIC_NAME").getValue());
     }
 
     @Test
     public void testInsertIfAllValuesNotProvided() throws Exception {
+//        INSERT INTO BIRDS ('BIRD_ID' , 'COMMON_NAME') VALUES (9, 'Cormorant');
         FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
@@ -184,6 +214,9 @@ public class FileAccessorImplTest extends TestCase {
 
     @Test
     public void testInsertMultipleRows() throws Exception {
+//       INSERT INTO BIRDS ('BIRD_ID' , 'SCIENTIFIC_NAME', 'COMMON_NAME')
+//                  VALUES (10, 'Cygnus olor', 'Cormorant'),
+//                         (11, 'Bean goose', NULL);
         FileAccessorImpl accessor = new FileAccessorImpl();
         Row row1 = new Row();
         row1.addField(new Field(new Column("BIRD_ID", Datatype.INTEGER.name()), "10"));

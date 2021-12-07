@@ -231,7 +231,7 @@ public class FileAccessorImpl implements TableAccessor {
 
     private Map<Integer, String> getColumnValuesFromRowLines(String line) {
         Map<Integer, String> columnValues = new HashMap<>();
-        if (Objects.nonNull(line) && line.isEmpty()) {
+        if (Objects.isNull(line) || line.isEmpty()) {
             return columnValues;
         }
         int length = line.length();
