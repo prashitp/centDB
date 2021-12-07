@@ -1,0 +1,25 @@
+User: asdfgh, Execution Time: 2021-12-07 at 18:17:12 AST, Database (2): CENT_DB1, Message: Database Selected
+User: asdfgh, Execution Time: 2021-12-07 at 18:17:20 AST, Database (2): CENT_DB1, Message: Selection started
+User: asdfgh, Execution Time: 2021-12-07 at 18:17:20 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: FGHJK, Execution Time: 2021-12-07 at 18:19:36 AST, Database (2): CENT_DB1, Message: Database Selected
+User: FGHJK, Execution Time: 2021-12-07 at 18:19:54 AST, Database (2): CENT_DB1, Message: Selection started
+User: FGHJK, Execution Time: 2021-12-07 at 18:20:22 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: FGHJK, Execution Time: 2021-12-07 at 18:20:46 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection started
+User: FGHJK, Execution Time: 2021-12-07 at 18:22:08 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: DFGHJ, Execution Time: 2021-12-07 at 18:22:21 AST, Database (2): CENT_DB1, Message: Database Selected
+User: DFGHJ, Execution Time: 2021-12-07 at 18:22:28 AST, Database (2): CENT_DB1, Message: Selection started
+User: DFGHJ, Execution Time: 2021-12-07 at 18:22:37 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: DFGHJ, Execution Time: 2021-12-07 at 18:23:02 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection started
+User: DFGHJ, Execution Time: 2021-12-07 at 18:23:02 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: DFGHJ, Execution Time: 2021-12-07 at 18:23:10 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection started
+User: DFGHJ, Execution Time: 2021-12-07 at 18:23:58 AST, Database (2): CENT_DB1, Table: BIRDS, Message: Selection completed
+User: VBN, Execution Time: 2021-12-07 at 18:25:28 AST, Database (2): CENT_DB1, Message: Database Selected
+User: SDF, Execution Time: 2021-12-07 at 18:27:34 AST, Database (2): CENT_DB1, Message: Database Selected
+User: fghj, Execution Time: 2021-12-07 at 18:31:05 AST, Database (2): CENT_DB1, Message: Database Selected
+User: sd, Execution Time: 2021-12-07 at 18:44:37 AST, Database (2): CENT_DB1, Message: Database Selected
+User: sd, Execution Time: 2021-12-07 at 18:46:26 AST, Database (2): CENT_DB1, Message: Database Selected
+User: asd, Execution Time: 2021-12-07 at 18:50:47 AST, Database (2): CENT_DB1, Message: Database Selected
+User: sd, Execution Time: 2021-12-07 at 18:53:17 AST, Database (2): CENT_DB1, Message: Database Selected
+User: xadf, Execution Time: 2021-12-07 at 19:01:31 AST, Database (2): CENT_DB1, Message: Database Selected
+User: dsf, Execution Time: 2021-12-07 at 19:03:14 AST, Database (2): CENT_DB1, Message: Database Selected
+User: 1, Execution Time: 2021-12-07 at 19:07:29 AST, Database (2): CENT_DB1, Message: Database Selected

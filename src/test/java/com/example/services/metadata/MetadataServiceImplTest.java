@@ -5,6 +5,7 @@ import com.example.models.enums.Entity;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +54,9 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(id, firstName, lastName, email);
+        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
         Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
-        database.setTables(List.of(table));
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
@@ -76,9 +77,9 @@ public class MetadataServiceImplTest {
                                                     .referenceTableName("STUDENT")
                                                     .referenceColumnName("ID").build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(contactId, phoneNumber, studentId);
-        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
-        database.setTables(List.of(table));
+        List<Column> columns = Arrays.asList(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(Arrays.asList(foreignKey)).build();
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
@@ -97,9 +98,9 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(id, firstName, lastName, email);
+        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
         Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
-        database.setTables(List.of(table));
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
@@ -120,9 +121,9 @@ public class MetadataServiceImplTest {
                 .referenceTableName("STUDENT")
                 .referenceColumnName("ID").build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = List.of(contactId, phoneNumber, studentId);
-        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
-        database.setTables(List.of(table));
+        List<Column> columns = Arrays.asList(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(Arrays.asList(foreignKey)).build();
+        database.setTables(Arrays.asList(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();

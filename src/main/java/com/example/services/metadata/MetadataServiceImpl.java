@@ -2,6 +2,7 @@ package com.example.services.metadata;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
+import com.example.models.enums.MetadataToken;
 
 import java.io.File;
 import java.io.IOException;
@@ -242,7 +243,7 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         List<Column> dbColumns;
 
         for (String line: lines) {
-            if (Objects.isNull(line) || (line.isBlank())) {
+            if (Objects.isNull(line) || (line.isEmpty())) {
                 continue;
             }
             StringTokenizer tokenizer = new StringTokenizer(line, "|");

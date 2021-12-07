@@ -1,41 +1,46 @@
 package com.example.models;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Data
+@Builder
 public class Row {
 
-    private List<Field> rowData;
+    private List<Field> fields;
 
     public Row() {
-        rowData = new ArrayList<Field>();
+        fields = new ArrayList<Field>();
     }
 
     public Row(Row row) {
-        this.rowData = new ArrayList<>(row.getAllFieldsOfRow());
+        this.fields = new ArrayList<>(row.getAllFieldsOfRow());
     }
 
-    public Row(List<Field> rowData) {
+    public Row(List<Field> fields) {
         super();
-        this.rowData = rowData;
+        this.fields = fields;
     }
 
     public void addField(Field field) {
-        this.rowData.add(field);
+        this.fields.add(field);
     }
 
     public List<Field> getAllFieldsOfRow() {
-        return this.rowData;
+        return this.fields;
     }
 
     @Override
     public String toString() {
-        return "Row [rowData=" + rowData + "]";
+        return "Row [rowData=" + fields + "]";
     }
 
     public Field getFieldByColumnName(String columnName) {
-        Optional<Field> field = rowData.stream().filter(f -> f.getColumn().getName().equalsIgnoreCase(columnName)).findAny();
+        Optional<Field> field = fields.stream().filter(f -> f.getColumn().getName().equalsIgnoreCase(columnName)).findAny();
         if (field.isPresent()) {
             return field.get();
         }

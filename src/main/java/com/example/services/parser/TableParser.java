@@ -3,14 +3,12 @@ package com.example.services.parser;
 import com.example.models.*;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
+import com.example.util.QueryUtil;
 import com.example.util.StringUtil;
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.util.Constants.*;
@@ -20,51 +18,93 @@ import static com.example.util.Constants.FROM;
 public class TableParser {
 
     public TableQuery select(String query, Metadata metadata) {
-        String table = getTable(query, FROM);
+        Table table = QueryUtil.getTable(metadata, getTable(query, FROM));
         Condition condition = getCondition(query);
-        List<Column> columns = getColumns(StringUtil.match(query, SELECT, FROM), metadata.getAllColumnsForTable(table));
+        List<Column> columns = getColumns(StringUtil.match(query, SELECT, FROM),
+                table.getColumns());
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
-                .tableName(table)
+                .tableName(table.getName())
                 .columns(columns)
                 .tableOperation(Operation.SELECT)
-                .conditions(Collections.singletonList(condition))
+                .conditions(Objects.nonNull(condition) ? Collections.singletonList(condition) : Collections.EMPTY_LIST)
                 .build();
     }
 
     public TableQuery delete(String query, Metadata metadata) {
-        String table = getTable(query, FROM);
+        Table table = QueryUtil.getTable(metadata, getTable(query, FROM));
         Condition condition = getCondition(query);
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
-                .tableName(table)
+                .tableName(table.getName())
                 .tableOperation(Operation.DELETE)
                 .conditions(Collections.singletonList(condition))
                 .build();
     }
 
     public TableQuery update(String query, Metadata metadata) {
-        String table = getTable(query, SET);
+        Table table = QueryUtil.getTable(metadata, StringUtil.match(query, UPDATE, SET));
         Condition condition = getCondition(query);
+        Pair<String, String> fieldPair = getField(query, SET);
+
+        Field field = Field.builder()
+                .column(QueryUtil.getColumn(table, fieldPair.getKey()))
+                .value(fieldPair.getValue())
+                .build();
 
         return TableQuery.builder()
+                .fields(Collections.singletonList(field))
                 .schemaName(metadata.getDatabaseName())
-                .tableName(table)
+                .tableName(table.getName())
                 .tableOperation(Operation.UPDATE)
                 .conditions(Collections.singletonList(condition))
                 .build();
     }
 
     public TableQuery insert(String query, Metadata metadata) {
-        String table = null;
+        Table table = QueryUtil.getTable(metadata, StringUtil.matchTo(StringUtil.match(query, INTO, VALUES), "\\("));
+        String[] columns = removeParenthesis(StringUtil.match(query, table.getName(), VALUES)).split(COMMA);
+        String[] values = removeParenthesis(StringUtil.matchFrom(query, VALUES)).split(COMMA);
+
+        List<Field> fields = new ArrayList<>();
+        for (int i = 0; i < columns.length; i++) {
+            fields.add(Field.builder()
+                    .column(QueryUtil.getColumn(table, columns[i].trim()))
+                    .value(values[i].trim())
+                    .build());
+        }
+
+        Row row = Row.builder()
+                .fields(fields)
+                .build();
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
-                .tableName(table)
+                .tableName(table.getName())
+                .rows(Collections.singletonList(row))
                 .tableOperation(Operation.INSERT)
                 .build();
+    }
+
+    private String removeParenthesis(String string) {
+        return string.replaceAll("[()]", "");
+    }
+
+    private Pair<String, String> getField(String string, String limiter) {
+        String field;
+        if (string.contains(WHERE)) {
+            field = StringUtil.match(string, limiter, WHERE);
+        } else {
+            field = StringUtil.matchFrom(string, limiter);
+        }
+
+        String[] strings = field.split("\\s");
+        String column = strings[0].trim();
+        String value = strings[2].trim();
+
+        return new Pair<>(column, value);
 
     }
 
@@ -83,7 +123,7 @@ public class TableParser {
         if (query.contains(WHERE)) {
             Operator operator = getOperator(query);
             String column = StringUtil.match(query, WHERE, operator.operatorValue);
-            String value = StringUtil.matchFrom(query, operator.operatorValue);
+            String value = StringUtil.matchFrom(StringUtil.matchFrom(query, WHERE), operator.operatorValue);
 
             condition = Condition.builder()
                     .operand1(column)

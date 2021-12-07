@@ -10,6 +10,7 @@ import com.example.services.metadata.MetadataServiceImpl;
 import com.example.services.parser.DatabaseParser;
 import com.example.services.parser.TableParser;
 import com.example.services.processor.TableProcessor;
+import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
 import java.util.*;
@@ -80,9 +81,8 @@ public class InputOperation {
                 TableQuery tableQuery = tableParser.select(query, metadata);
                 List<Row> rows = tableProcessor.select(tableQuery);
 
-                LogContext.setTable(getTable(metadata, tableQuery.getTableName()));
+                LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
                 logService.log("Selection completed");
-                // Logger Logic
                 return null;
             }
 
@@ -120,13 +120,5 @@ public class InputOperation {
         } else {
             LogContext.setMetadata(metadata);
         }
-    }
-
-    private static Table getTable(Metadata metadata, String tableName) {
-        return metadata.getAllTablesFromDatabase()
-                .stream()
-                .filter(e -> e.getName().equalsIgnoreCase(tableName))
-                .findFirst()
-                .get();
     }
 }

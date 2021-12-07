@@ -17,6 +17,10 @@ public class StringUtil {
         return find(string, from.concat("(.*)"));
     }
 
+    public static String matchTo(String string, String to) {
+        return string.split(to)[0].trim();
+    }
+
     private static String find(String string, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string);
