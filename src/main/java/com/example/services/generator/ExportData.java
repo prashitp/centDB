@@ -1,27 +1,25 @@
 package com.example.services.generator;
 
+import com.example.util.Constants;
+
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ExportData {
-    public static final String DB_DIRECTORY = "storage/METADATA/";
-    public static final String TB_DIRECTORY = "storage/";
 
-    public static void main(String[] args) {
-        createSqlDump("CENT_DB2");
-    }
+    // just call -- ExportData.createSqlDump("CENT_DB1");
 
     public static boolean createSqlDump(String DB_NAME) {
-        File[] dbFiles = new File(DB_DIRECTORY).listFiles();
+        File[] dbFiles = new File(Constants.DB_DIRECTORY).listFiles();
         boolean dbFoundFlag = false;
         for (int i=0; i < dbFiles.length; i++){
             String fileName = dbFiles[i].toString();
-            if ((DB_NAME+".txt").equals(fileName.split("_")[1]+"_"+fileName.split("_")[2])){
+            if ((DB_NAME.concat(Constants.TXT_FILE_EXTENSION).equals(fileName.split("_")[1].concat("_").concat(fileName.split("_")[2])))){
                 dbFoundFlag = true;
                 BufferedReader br = null;
                 try {
-                    String dbFilePath = DB_DIRECTORY + "MD_" + DB_NAME + ".txt";
+                    String dbFilePath = Constants.DB_DIRECTORY.concat("MD_").concat(DB_NAME).concat(Constants.TXT_FILE_EXTENSION);
                     //func to generate create db query
                     writeDbInFile(DB_NAME);
                     br = new BufferedReader(new FileReader(dbFilePath));
@@ -43,9 +41,9 @@ public class ExportData {
     }
 
     public static void writeDbInFile(String DB_NAME){
-        String DB_FORMAT = "`"+DB_NAME+"`";
+        String DB_FORMAT = "`".concat(DB_NAME).concat("`");
         try {
-            PrintWriter writer = new PrintWriter(DB_NAME+".sql", "UTF-8");
+            PrintWriter writer = new PrintWriter(DB_NAME.concat(Constants.SQL_FILE_EXTENSION), "UTF-8");
             writer.write("CREATE DATABASE IF NOT EXISTS "+DB_FORMAT+"\n");
             writer.write("USE "+DB_FORMAT+";\n");
             writer.close();
@@ -57,7 +55,7 @@ public class ExportData {
     public static void parseTableQuery(BufferedReader br, String DB_NAME){
         String line;
         try{
-            File file = new File(DB_NAME+".sql");
+            File file = new File(DB_NAME.concat(Constants.SQL_FILE_EXTENSION));
             FileWriter fr = new FileWriter(file, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fr);
             Set<String> tableNames = new HashSet<String>();
@@ -94,13 +92,13 @@ public class ExportData {
     }
 
     public static void insertTableData(String DB_NAME, String table){
-        String tableDataLocation = TB_DIRECTORY+DB_NAME+"/"+"TB_"+table+".txt";
+        String tableDataLocation = Constants.TB_DIRECTORY.concat(DB_NAME).concat("/").concat("TB_").concat(table).concat(Constants.TXT_FILE_EXTENSION);
         BufferedReader bufferReader = null;
         BufferedWriter bufferedWriter = null;
         try {
             String line;
             bufferReader = new BufferedReader(new FileReader(tableDataLocation));
-            File file = new File(DB_NAME+".sql");
+            File file = new File(DB_NAME.concat(Constants.SQL_FILE_EXTENSION));
             FileWriter fr = new FileWriter(file, true);
             bufferedWriter = new BufferedWriter(fr);
             bufferedWriter.write("\n");
