@@ -2,6 +2,7 @@ package com.example.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Row {
 
@@ -12,7 +13,7 @@ public class Row {
     }
 
     public Row(Row row) {
-        this.rowData = new ArrayList<>(row.getAllFieldsOfTheRow());
+        this.rowData = new ArrayList<>(row.getAllFieldsOfRow());
     }
 
     public Row(List<Field> rowData) {
@@ -24,13 +25,23 @@ public class Row {
         this.rowData.add(field);
     }
 
-    public List<Field> getAllFieldsOfTheRow() {
+    public List<Field> getAllFieldsOfRow() {
         return this.rowData;
     }
 
     @Override
     public String toString() {
         return "Row [rowData=" + rowData + "]";
+    }
+
+    public Field getFieldByColumnName(String columnName) {
+        Optional<Field> field = rowData.stream().filter(f -> f.getColumn().getName().equalsIgnoreCase(columnName)).findAny();
+        if (field.isPresent()) {
+            return field.get();
+        }
+        else {
+            return null;
+        }
     }
 
 }

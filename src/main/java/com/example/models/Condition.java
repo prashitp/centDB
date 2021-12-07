@@ -10,7 +10,8 @@ public class Condition {
 
     String operand1;
 
+    Operator operator;
+
     String operand2;
 
-    Operator operator;
 }

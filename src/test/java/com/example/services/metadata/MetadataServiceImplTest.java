@@ -2,13 +2,11 @@ package com.example.services.metadata;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
-import com.example.models.enums.Operation;
-import com.example.services.accessor.FileAccessorImpl;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class MetadataServiceImplTest {
 
@@ -18,23 +16,19 @@ public class MetadataServiceImplTest {
         MetadataService metadataService = new MetadataServiceImpl();
         Metadata metadata = metadataService.read(Entity.DATABASE, "CENT_DB1");
         metadata.getAllTablesFromDatabase()
-                .forEach(table -> {System.out.println("Table:"+ table.getName());
-                    table.getColumns().forEach(col -> System.out.println("Column name :" + col.getName()));
+                .forEach(table -> {
+                    System.out.println("Table:"+ table.getName());
+                    table.getColumns().forEach(col -> System.out.println("Column name :" + col));
+                    System.out.println("Primary Key:" + table.getPrimaryKey());
+                    Optional.ofNullable(table.getForeignKeys())
+                            .ifPresent(foreignKeys -> foreignKeys.forEach((foreignKey -> {
+                        System.out.println("Foreign Key Column Name:" + foreignKey.getForeignKeyColumn());
+                        System.out.println("Foreign Key Column Reference table:" + foreignKey.getReferenceTableName());
+                        System.out.println("Foreign Key Column Reference column:" + foreignKey.getReferenceColumnName());
+                    })));
                 });
-
         List<String> columns = metadata.getAllColumnsNameForTable("BIRDS");
         List<String> tableName = metadata.getAllTableNames();
-
-        FileAccessorImpl accessor = new FileAccessorImpl();
-        Column column1 = new Column();
-        column1.getName();
-        TableQuery query = TableQuery.builder()
-                .tableName("CENT_DB1")
-                .columns(Arrays.asList(column1))
-                .tableName("BIRDS")
-                .tableOperation(Operation.SELECT)
-                .build();
-        List<Row> output = accessor.read(query);
     }
 
     @Test
@@ -49,6 +43,7 @@ public class MetadataServiceImplTest {
 
     @Test
     public void createTable() throws Exception {
+//        CREATE TABLE STUDENT
         String dbName = "DB2";
         String tableName = "STUDENT";
         String INTEGER = "INTEGER";
@@ -58,9 +53,32 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
-        Table table = Table.builder().name(tableName).columns(columns).build();
-        database.setTables(Arrays.asList(table));
+        List<Column> columns = List.of(id, firstName, lastName, email);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+        database.setTables(List.of(table));
+        Metadata metadata = new Metadata();
+        metadata.setDatabase(database);
+        MetadataService metadataService = new MetadataServiceImpl();
+        metadataService.write(Entity.TABLE, metadata);
+    }
+
+    @Test
+    public void createTableWithForeignKey() throws Exception {
+//        CREATE TABLE STUDENT_CONTACT
+        String dbName = "DB2";
+        String tableName = "STUDENT_CONTACT";
+        String INTEGER = "INTEGER";
+        String VARCHAR ="VARCHAR";
+        Column contactId = Column.builder().name("CONTACT_ID").dataType(INTEGER).build();
+        Column phoneNumber = Column.builder().name("PHONE_NUMBER").dataType(VARCHAR).build();
+        Column studentId = Column.builder().name("STUDENT_ID").dataType(VARCHAR).build();
+        ForeignKey foreignKey = ForeignKey.builder().foreignKeyColumn("STUDENT_ID")
+                                                    .referenceTableName("STUDENT")
+                                                    .referenceColumnName("ID").build();
+        Database database = Database.builder().name(dbName).build();
+        List<Column> columns = List.of(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
+        database.setTables(List.of(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
@@ -69,6 +87,7 @@ public class MetadataServiceImplTest {
 
     @Test
     public void deleteTable() throws Exception {
+//        DROP TABLE STUDENT
         String dbName = "DB2";
         String tableName = "STUDENT";
         String INTEGER = "INTEGER";
@@ -78,9 +97,32 @@ public class MetadataServiceImplTest {
         Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
         Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
         Database database = Database.builder().name(dbName).build();
-        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
-        Table table = Table.builder().name(tableName).columns(columns).build();
-        database.setTables(Arrays.asList(table));
+        List<Column> columns = List.of(id, firstName, lastName, email);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+        database.setTables(List.of(table));
+        Metadata metadata = new Metadata();
+        metadata.setDatabase(database);
+        MetadataService metadataService = new MetadataServiceImpl();
+        metadataService.delete(Entity.TABLE, metadata);
+    }
+
+    @Test
+    public void deleteTableWithForeignKey() throws Exception {
+//        DROP TABLE STUDENT_CONTACT
+        String dbName = "DB2";
+        String tableName = "STUDENT_CONTACT";
+        String INTEGER = "INTEGER";
+        String VARCHAR ="VARCHAR";
+        Column contactId = Column.builder().name("CONTACT_ID").dataType(INTEGER).build();
+        Column phoneNumber = Column.builder().name("PHONE_NUMBER").dataType(VARCHAR).build();
+        Column studentId = Column.builder().name("STUDENT_ID").dataType(VARCHAR).build();
+        ForeignKey foreignKey = ForeignKey.builder().foreignKeyColumn("STUDENT_ID")
+                .referenceTableName("STUDENT")
+                .referenceColumnName("ID").build();
+        Database database = Database.builder().name(dbName).build();
+        List<Column> columns = List.of(contactId, phoneNumber, studentId);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(contactId).foreignKeys(List.of(foreignKey)).build();
+        database.setTables(List.of(table));
         Metadata metadata = new Metadata();
         metadata.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
