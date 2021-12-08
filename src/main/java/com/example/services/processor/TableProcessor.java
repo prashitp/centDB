@@ -34,8 +34,4 @@ public class TableProcessor {
         tableAccessor.insert(tableQuery);
         return true;
     }
-
-
-
-
 }
