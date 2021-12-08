@@ -9,7 +9,7 @@ public interface TableAccessor {
 
     List<Row> read(TableQuery query) throws Exception;
 
-    int insert(TableQuery table) throws Exception;
+    List<Row> insert(TableQuery table) throws Exception;
 
     int update(TableQuery table) throws Exception;
 

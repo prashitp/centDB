@@ -43,7 +43,7 @@ public class OperandProcessorImpl implements OperandProcessor {
         String operand2 = condition.getOperand2();
         String fieldDatatype = field.getColumn().getDataType();
 
-        if (operand2.equals(NULL) && Objects.isNull(field.getValue())) {
+        if (operand2.equals(NULL) && (Objects.isNull(field.getValue()) || field.getValue().toString().isBlank())) {
             return true;
         }
 
