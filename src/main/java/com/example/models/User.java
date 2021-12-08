@@ -1,9 +1,12 @@
 package com.example.models;
 
+import com.example.models.enums.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Data
 @Builder
@@ -13,7 +16,9 @@ public class User {
 
     private String username;
 
-    private String encryptedPassword;
+    private String password;
 
-    private String permission;
+    private Permission permission;
+
+    private Map<String, String> answers;
 }

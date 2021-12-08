@@ -1,17 +1,18 @@
 package com.example.services;
 
 import com.example.models.User;
-import com.example.persistence.UserDao;
+import com.example.services.accessor.UserAccessor;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Objects;
+import java.util.Optional;
 
 public class UserService {
 
     private static SecretKey secretKey = new SecretKeySpec(System.getenv("SECRET_KEY").getBytes(), "AES");
 
-    private UserDao userDao;
+    private UserAccessor userAccessor;
 
     private EncryptionService encryptionService;
 
@@ -19,29 +20,28 @@ public class UserService {
         this.encryptionService = new EncryptionService();
     }
 
-    public UserService(UserDao userDao, EncryptionService encryptionService) {
-        this.userDao = userDao;
+    public UserService(UserAccessor userAccessor, EncryptionService encryptionService) {
+        this.userAccessor = userAccessor;
         this.encryptionService = encryptionService;
     }
 
-    public Boolean register(String username, String password) {
-        String encryptedPassword = encryptionService.encrypt(password, secretKey);
-        return true;
+    public Boolean register(User user) {
+        String encryptedPassword = encryptionService.encrypt(user.getPassword(), secretKey);
+        user.setPassword(encryptedPassword);
+        return userAccessor.save(user);
     }
 
-    public User login(String username, String password) {
-        String encryptedPassword = encryptionService.encrypt(password, secretKey);
-        String decryptedPassword = encryptionService.decrypt(encryptedPassword, secretKey);
-        return User.builder()
-                .username(username)
-                .build();
+    public Optional<User> login(User user) {
+        String encryptedPassword = encryptionService.encrypt(user.getPassword(), secretKey);
+        user.setPassword(encryptedPassword);
+        return userAccessor.get(user);
     }
 
     public Boolean isPresent(String username) {
-        return userDao.get(username);
+        return userAccessor.isPresent(username);
     }
 
     public Boolean isValid(User user) {
-        return Objects.nonNull(userDao.get(user));
+        return Objects.nonNull(userAccessor.get(user));
     }
 }

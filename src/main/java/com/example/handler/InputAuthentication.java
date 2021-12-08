@@ -6,6 +6,7 @@ import com.example.services.UserService;
 import com.example.util.StringUtil;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class InputAuthentication {
@@ -30,7 +31,12 @@ public class InputAuthentication {
             return;
         }
 
-        if (userService.register(username, password)) {
+        User user = User.builder()
+                .username(username)
+                .password(password)
+                .build();
+
+        if (userService.register(user)) {
             System.out.print("Registration Successful \n");
         }
     }
@@ -44,10 +50,15 @@ public class InputAuthentication {
         System.out.print("Enter Password: \n");
         final String password = scanner.nextLine();
 
-        User user = userService.login(username, password);
-        LogContext.setUser(user);
+        User user = User.builder()
+                .username(username)
+                .password(password)
+                .build();
 
-        if (Objects.nonNull(user)) {
+        Optional<User> optional = userService.login(user);
+
+        if (optional.isPresent()) {
+            LogContext.setUser(optional.get());
             System.out.print("Login Successful \n");
         }
     }
