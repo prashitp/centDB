@@ -37,13 +37,13 @@ public class TableProcessor {
 
     @SneakyThrows
     public Boolean drop(TableQuery tableQuery) {
-        //tableAccessor.drop(tableQuery);
+        tableAccessor.drop(tableQuery);
         return true;
     }
 
     @SneakyThrows
     public Boolean create(TableQuery tableQuery) {
-        //tableAccessor.create(tableQuery);
+        tableAccessor.create(tableQuery);
         return true;
     }
 }
