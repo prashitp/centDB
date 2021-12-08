@@ -12,7 +12,6 @@ import com.example.services.metadata.MetadataServiceImpl;
 import com.example.services.parser.DatabaseParser;
 import com.example.services.parser.TableParser;
 import com.example.services.processor.TableProcessor;
-import com.example.util.Constants;
 import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
@@ -38,15 +37,15 @@ public class InputOperation {
                 System.out.print("SQL> ");
                 final String query = scanner.nextLine();
 
-                LogContext.setQuery(query);
                 long startTime = System.currentTimeMillis();
 
                 operate(scanner, query.toUpperCase(Locale.ROOT));
 
                 long endTime = System.currentTimeMillis();
                 LogContext.setExecutionTime(endTime-startTime);
-                generalLogService.log("Query execution successful");
+                generalLogService.log(String.format("Query successful - %s",query));
             } catch (Exception e) {
+                eventLogService.log(String.format("Operation failed - %s",e.getMessage()));
                 continue QUERY;
             }
         } while (true);
@@ -68,7 +67,6 @@ public class InputOperation {
                 metadata = databaseParser.use(query);
                 checkDatabase(metadata);
                 System.out.printf("%s selected \n", metadata.getDatabaseName());
-                LogContext.setDatabaseState(Constants.DATABASE_STATE_ONLINE);
                 return null;
             }
 
@@ -79,6 +77,7 @@ public class InputOperation {
                     @Override
                     public Void visitDatabase() {
                         databaseParser.create(query);
+                        eventLogService.log("Database created");
                         return null;
                     }
 
@@ -86,6 +85,7 @@ public class InputOperation {
                     public Void visitTable() {
                         TableQuery tableQuery = tableParser.create(query, metadata);
                         tableProcessor.create(tableQuery);
+                        eventLogService.log("Table created");
                         return null;
                     }
                 });
@@ -97,6 +97,7 @@ public class InputOperation {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.drop(query, metadata);
                 tableProcessor.drop(tableQuery);
+                eventLogService.log("Table dropped");
                 return null;
             }
 
@@ -104,10 +105,13 @@ public class InputOperation {
             public Void visitInsert() {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.insert(query, metadata);
+
+                queryLogService.log(String.format("Insert started - %s",query));
                 List<Row> rows = tableProcessor.insert(tableQuery);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
-                LogContext.setDatabaseTables(metadata.getAllTablesWithRows());
+//                LogContext.setDatabaseTables(getAllTablesWithRows(metadata));
+                getAllTablesWithRows(metadata);
                 queryLogService.log(rows.size() + " rows inserted");
                 return null;
             }
@@ -116,11 +120,13 @@ public class InputOperation {
             @SneakyThrows
             public Void visitSelect() {
                 checkDatabase(metadata);
+
+                queryLogService.log(String.format("Selection started - %s",query));
                 TableQuery tableQuery = tableParser.select(query, metadata);
                 List<Row> rows = tableProcessor.select(tableQuery);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
-                queryLogService.log( rows.size() + " rows returned");
+                queryLogService.log( rows.size() + " rows selected");
                 return null;
             }
 
@@ -130,6 +136,7 @@ public class InputOperation {
                 TableQuery tableQuery = tableParser.update(query, metadata);
                 List<Row> rows = tableProcessor.update(tableQuery);
 
+                queryLogService.log(String.format("Update started - %s",query));
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
                 queryLogService.log(rows.size() + " rows updated");
                 return null;
@@ -139,23 +146,28 @@ public class InputOperation {
             public Void visitDelete() {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.delete(query, metadata);
+
+                queryLogService.log(String.format("Delete started - %s",query));
                 List<Row> rows = tableProcessor.delete(tableQuery);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
-                LogContext.setDatabaseTables(metadata.getAllTablesWithRows());
+                getAllTablesWithRows(metadata);
                 queryLogService.log(rows.size() + " rows deleted");
                 return null;
             }
 
             @Override
             public Void visitCommit() {
+                eventLogService.log("Transaction committed");
                 return null;
             }
 
             @Override
             public Void visitStartTransaction() {
                 checkDatabase(metadata);
+                eventLogService.log("Transaction started");
                 InputTransaction.query(scanner, metadata);
+                eventLogService.log("Transaction completed");
                 return null;
             }
         });
@@ -166,7 +178,7 @@ public class InputOperation {
             System.out.print("Please select database \n");
         } else {
             LogContext.setMetadata(metadata);
-            LogContext.setDatabaseTables(metadata.getAllTablesWithRows());
+            getAllTablesWithRows(metadata);
         }
     }
 
@@ -174,6 +186,30 @@ public class InputOperation {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
 
+        long startTime = System.currentTimeMillis();
+        generalLogService.log("Creating ERD");
+
         ExportService.createErd(databaseName);
+
+        long endTime = System.currentTimeMillis();
+        LogContext.setExecutionTime(endTime-startTime);
+        generalLogService.log("ERD created");
+    }
+
+    private static void getAllTablesWithRows(Metadata metadata) {
+        FileAccessorImpl accessor = new FileAccessorImpl();
+        List<Table> tables = new ArrayList<>();
+        metadata.getAllTablesFromDatabase().forEach(table -> {
+            TableQuery query = TableQuery.builder().schemaName(metadata.getDatabaseName()).tableName(table.getName())
+                    .columns(table.getColumns()).tableOperation(Operation.SELECT).build();
+            try {
+                List<Row> output = accessor.read(query);
+                table.setRows(output);
+            } catch (Exception e) {
+                System.out.println("Error while reading file");
+            }
+            tables.add(table);
+        });
+        metadata.getDatabase().updateTables(tables);
     }
 }

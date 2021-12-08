@@ -49,12 +49,6 @@ public class QueryLogService extends LogService {
 			String tableName = LogContext.getTable().getName();
 			prefix = prefix.concat(String.format("Table: %s, ", tableName));
 		}
-
-		if(!LogContext.getQuery().isEmpty()) {
-			String query = LogContext.getQuery();
-			prefix = prefix.concat(String.format("Query: %s, ", query));
-		}
-
 		return prefix;
 	}
 }

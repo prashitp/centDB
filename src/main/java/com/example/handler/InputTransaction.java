@@ -3,7 +3,6 @@ package com.example.handler;
 import com.example.models.Metadata;
 import com.example.models.TableQuery;
 import com.example.models.enums.Operation;
-import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
 import com.example.services.metadata.MetadataService;
 import com.example.services.metadata.MetadataServiceImpl;
@@ -16,7 +15,6 @@ import java.util.*;
 
 public class InputTransaction {
 
-    private static LogService logService;
     private static List<TableQuery> tableQueries = new ArrayList<>();
 
     public static void query(Scanner scanner, Metadata metadata) {
@@ -25,7 +23,7 @@ public class InputTransaction {
                 System.out.print("TRANSACTION> ");
                 final String query = scanner.nextLine();
 
-                logService = new LogService();
+//                logService = new LogService();
                 operate(scanner, metadata, query);
             } catch (Exception e) {
                 continue TRANSACTION;

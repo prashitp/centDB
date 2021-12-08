@@ -4,8 +4,6 @@ import com.example.models.Row;
 import com.example.models.Table;
 import com.example.models.context.LogContext;
 import com.example.models.Metadata;
-import lombok.extern.java.Log;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,27 +49,17 @@ public class GeneralLogService extends LogService{
             }
         }
 
-        if(!LogContext.getDatabaseState().isEmpty()) {
-            String databaseState = LogContext.getDatabaseState();
-            prefix = prefix.concat(String.format("Database State: %s; ", databaseState));
-        }
-
         if (Objects.nonNull(LogContext.getMetadata())) {
             Metadata metadata = LogContext.getMetadata();
             if (Objects.nonNull(metadata.getDatabaseName())) {
                 List<Table> tables = metadata.getAllTablesFromDatabase();
-                String tableInfo = String.format("Tables: ");
+                String tableInfo = String.format("Tables:");
                 for (Table table : tables) {
                     List<Row> rows = table.getRows();
-                    tableInfo = tableInfo.concat(String.format("%s (%d); ",table.getName(),table.getRows().size()));
+                    tableInfo = tableInfo.concat(String.format(" %s (%d)",table.getName(),table.getRows().size()));
                 }
-                prefix = prefix.concat(tableInfo);
+                prefix = prefix.concat(tableInfo+"; ");
             }
-        }
-
-        if(!LogContext.getQuery().isEmpty()) {
-            String query = LogContext.getQuery();
-            prefix = prefix.concat(String.format("Query: %s; ", query));
         }
 
         if(LogContext.getExecutionTime() != 0) {
