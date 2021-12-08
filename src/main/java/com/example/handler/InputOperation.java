@@ -3,6 +3,7 @@ package com.example.handler;
 import com.example.models.*;
 import com.example.models.context.LogContext;
 import com.example.models.enums.Operation;
+import com.example.models.erd.Erd;
 import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
 import com.example.services.metadata.MetadataService;
@@ -12,6 +13,7 @@ import com.example.services.parser.TableParser;
 import com.example.services.processor.TableProcessor;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -128,5 +130,12 @@ public class InputOperation {
                 .filter(e -> e.getName().equalsIgnoreCase(tableName))
                 .findFirst()
                 .get();
+    }
+
+    public static void generateERD(Scanner scanner) throws IOException {
+        System.out.println("Enter the database name : ");
+        final String databaseName = scanner.nextLine();
+        Erd erd = new Erd();
+        erd.erdGenerator(databaseName);
     }
 }

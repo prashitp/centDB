@@ -1,5 +1,6 @@
 package com.example.handler;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class InputSelection {
@@ -47,6 +48,11 @@ public class InputSelection {
                 break;
             case "3":
                 System.out.print("Reverse Engineering selected \n");
+                try {
+                    InputOperation.generateERD(scanner);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             case "4":
                 System.exit(0);
             default:
