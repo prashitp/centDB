@@ -8,11 +8,9 @@ import com.example.services.metadata.MetadataServiceImpl;
 import com.example.models.enums.Operation;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class FileAccessorImpl implements TableAccessor {
@@ -22,6 +20,7 @@ public class FileAccessorImpl implements TableAccessor {
 
     final static String TABLE_DATA_FILE_PREFIX = "TB_";
     final static String TABLE_DATA_FILE_SUFFIX = ".txt";
+    final static String TABLE_TEMP_FILE_PREFIX = "TB_TEMP_";
 
     final static String DATA_BASE_DIRECTORY = "storage/";
     final static String PATH_SEPARATOR = "/";
@@ -115,10 +114,10 @@ public class FileAccessorImpl implements TableAccessor {
                 break;
 
             case DELETE:
+
                 break;
         }
         return isValid;
-
     }
 
     @Override
@@ -127,16 +126,58 @@ public class FileAccessorImpl implements TableAccessor {
         if (!Operation.UPDATE.equals(operation)) {
             throw new InvalidOperation("Invalid operation");
         }
+        validateQuery(query);
         return 0;
     }
 
     @Override
-    public int delete(TableQuery query) throws Exception {
+    public List<Row> delete(TableQuery query) throws Exception {
         Operation operation = query.getTableOperation();
         if (!Operation.DELETE.equals(operation)) {
             throw new InvalidOperation("Invalid operation");
         }
-        return 0;
+        validateQuery(query);
+        return processDelete(query);
+    }
+
+    private synchronized List<Row> processDelete(TableQuery query) throws Exception {
+        TableQuery selectQuery = query;
+        selectQuery.setTableOperation(Operation.SELECT);
+        List<Row> rows = read(selectQuery);
+        List<String> stringRows = generateRowString(rows, query.getSchemaName(), query.getTableName());
+        String tableFileName = getDataFilePath(query.getSchemaName(), query.getTableName());
+        String tempFileName = getTempFilePath(query.getSchemaName(), query.getTableName());
+        Path tableFilePath = Paths.get(tableFileName);
+        Path tempFilePath = Path.of(tempFileName);
+        Files.createFile(tempFilePath);
+//        if set to true need to rollback the entire operation
+        AtomicBoolean isException = new AtomicBoolean(false);
+        try {
+            Files.lines(tableFilePath).filter(row -> {
+                if (stringRows.contains(row)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }).forEach(line -> {
+                try {
+                    appendToFile(tempFilePath, List.of(line));
+                } catch (Exception exception) {
+                    System.out.println("Exception while writing to new data file");
+                    isException.set(true);
+                    exception.printStackTrace();
+                }
+            });
+        }
+        finally {
+            if(Files.exists(tableFilePath) && Files.exists(tempFilePath) && !isException.get()) {
+                Files.move(tempFilePath, tableFilePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else {
+//                Perform necessary cleanup on exception
+            }
+        }
+        return rows;
     }
 
     /*
@@ -181,6 +222,14 @@ public class FileAccessorImpl implements TableAccessor {
         return dataFilePath;
     }
 
+    private String getTempFilePath(String schemaName, String tableName) {
+        String dataFilePath = DATA_BASE_DIRECTORY +
+                schemaName.toUpperCase(Locale.ROOT) + PATH_SEPARATOR +
+                TABLE_TEMP_FILE_PREFIX + tableName.toUpperCase(Locale.ROOT) +
+                TABLE_DATA_FILE_SUFFIX;
+        return dataFilePath;
+    }
+
     private Row generateRow(Map<Integer, String> rowValue) {
 //        Generate rows and filter what is required
         Row row = new Row();
@@ -215,7 +264,7 @@ public class FileAccessorImpl implements TableAccessor {
     }
 
     private Row getRequiredColumns(Row row, List<Column> requiredColumns) {
-        if (requiredColumns.isEmpty()) {
+        if (requiredColumns == null ||  requiredColumns.isEmpty()) {
             return new Row(row);
         }
         Row requiredRow = new Row();

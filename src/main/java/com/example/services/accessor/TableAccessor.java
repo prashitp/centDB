@@ -13,6 +13,6 @@ public interface TableAccessor {
 
     int update(TableQuery table) throws Exception;
 
-    int delete(TableQuery query) throws Exception;
+    List<Row> delete(TableQuery query) throws Exception;
 
 }

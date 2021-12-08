@@ -45,7 +45,7 @@ public class FileAccessorImplTest {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("COMMON_NAME").operator(Operator.EQUALS).operand2("BirdCommonName2").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
         assertEquals(1, output.size());
         Row row = output.get(0);
@@ -83,7 +83,7 @@ public class FileAccessorImplTest {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.EQUALS).operand2("5").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
         assertEquals(1, output.size());
         Row row = output.get(0);
@@ -102,7 +102,7 @@ public class FileAccessorImplTest {
         column2.setName("SCIENTIFIC_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.GREATER_THAN).operand2("2").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
+                .columns(Arrays.asList(column1, column2)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
         Assert.assertTrue(output.size() >= 4);
         Row row = output.get(0);
@@ -121,7 +121,7 @@ public class FileAccessorImplTest {
         column3.setName("COMMON_NAME");
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.LESS_THAN).operand2("2").build();
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
-                .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(Arrays.asList(condition)).build();
+                .columns(Arrays.asList(column1, column2, column3)).tableOperation(Operation.SELECT).conditions(List.of(condition)).build();
         List<Row> output = accessor.read(query);
         assertEquals(1, output.size());
         Row row = output.get(0);
@@ -237,10 +237,19 @@ public class FileAccessorImplTest {
         FileAccessorImpl accessor = new FileAccessorImpl();
         Row row1 = new Row();
         row1.addField(new Field());
-
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
                 .rows(List.of(row1)).tableOperation(Operation.INSERT).build();
         List<Row> output = accessor.insert(query);
+    }
+
+    @Test
+    public void testDeleteQuery() throws Exception {
+//        DELETE FROM BIRDS WHERE SCIENTIFIC_NAME = 'BirdScientificName5'
+        FileAccessorImpl accessor = new FileAccessorImpl();
+        Condition condition = Condition.builder().operand1("SCIENTIFIC_NAME").operator(Operator.EQUALS).operand2("BirdScientificName5").build();
+        TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME)
+                .tableOperation(Operation.DELETE).conditions(List.of(condition)).build();
+        List<Row> output = accessor.delete(query);
     }
 
 }
