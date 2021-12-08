@@ -290,11 +290,9 @@ public class FileAccessorImplTest {
             Column firstName = Column.builder().name("FIRST_NAME").dataType(VARCHAR).build();
             Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
             Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
-            Database database = Database.builder().name(dbName).build();
             List<Column> columns = Arrays.asList(id, firstName, lastName, email);
             Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
-            database.setTables(Arrays.asList(table));
-            TableQuery query = TableQuery.builder().schemaName(dbName).tableName(tableName).columns(columns).build();
+            TableQuery query = TableQuery.builder().schemaName(dbName).tableName(tableName).table(table).build();
             query.setTableOperation(Operation.CREATE);
             accessor.create(query);
     }
