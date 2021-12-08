@@ -18,6 +18,8 @@ public class TableQuery {
 
     private String tableName;
 
+    private Table table;
+
     private List<Column> columns;
 
     private List<Field> fields;
