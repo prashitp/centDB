@@ -1,26 +1,26 @@
 package com.example.models.context;
 
-import com.example.models.Transaction;
+import com.example.models.TransactionMessage;
 import java.util.ArrayDeque;
 
 public final class TransactionQueue {
 
-    private static ArrayDeque<Transaction> transactions;
+    private static ArrayDeque<TransactionMessage> transactionMessages;
 
-    public static Boolean add(Transaction transaction) {
-        return TransactionQueue.transactions.add(transaction);
+    public static Boolean add(TransactionMessage transactionMessage) {
+        return TransactionQueue.transactionMessages.add(transactionMessage);
     }
 
-    public static Transaction peek() {
-        return transactions.peek();
+    public static TransactionMessage peek() {
+        return transactionMessages.peek();
     }
 
-    public static Transaction poll() {
-        return transactions.poll();
+    public static TransactionMessage poll() {
+        return transactionMessages.poll();
     }
 
     public static Boolean isEmpty() {
-        return transactions.isEmpty();
+        return transactionMessages.isEmpty();
     }
 
 }
