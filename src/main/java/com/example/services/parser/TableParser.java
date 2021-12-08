@@ -102,6 +102,7 @@ public class TableParser {
         String table = StringUtil.match(query, CREATE_TABLE, "\\(");
         String[] columnStrings = removeParenthesis(StringUtil.matchFrom(query, table)).split(COMMA);
         List<Column> columns = new ArrayList<>();
+        List<ForeignKey> foreignKeys = new ArrayList<>();
 
         for (String column: columnStrings) {
             String[] details = column.split("\\s");
@@ -109,12 +110,18 @@ public class TableParser {
                     .name(details[0])
                     .dataType(details[1])
                     .build());
+
+            // Code for primary and foreign key.
         }
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
                 .tableName(table)
-                .columns(columns)
+                .table(Table.builder()
+                        .columns(columns)
+                        .primaryKey(Column.builder().build())
+                        .foreignKeys(foreignKeys)
+                        .build())
                 .tableOperation(Operation.CREATE)
                 .build();
     }
