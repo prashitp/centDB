@@ -18,7 +18,7 @@ public class InputSelection {
                 break;
             case "2":
                 System.out.print("Login selected \n");
-                InputAuthentication.login(scanner);
+                InputAuthentication.auth(scanner);
                 operation(scanner);
                 break;
             case "3":

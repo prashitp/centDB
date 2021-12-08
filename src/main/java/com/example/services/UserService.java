@@ -2,10 +2,11 @@ package com.example.services;
 
 import com.example.models.User;
 import com.example.services.accessor.UserAccessor;
+import com.example.services.accessor.UserAccessorImpl;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 
 public class UserService {
@@ -18,11 +19,7 @@ public class UserService {
 
     public UserService() {
         this.encryptionService = new EncryptionService();
-    }
-
-    public UserService(UserAccessor userAccessor, EncryptionService encryptionService) {
-        this.userAccessor = userAccessor;
-        this.encryptionService = encryptionService;
+        this.userAccessor = new UserAccessorImpl();
     }
 
     public Boolean register(User user) {
@@ -32,16 +29,24 @@ public class UserService {
     }
 
     public Optional<User> login(User user) {
-        String encryptedPassword = encryptionService.encrypt(user.getPassword(), secretKey);
-        user.setPassword(encryptedPassword);
-        return userAccessor.get(user);
+        Optional<User> optional = userAccessor.get(user);
+        if (optional.isPresent()) {
+            User databaseUser = optional.get();
+            String decryptedPassword = encryptionService.decrypt(databaseUser.getPassword(), secretKey);
+            if (decryptedPassword.equals(user.getPassword())) {
+                return Optional.of(databaseUser);
+            }
+        }
+        return Optional.empty();
     }
 
     public Boolean isPresent(String username) {
-        return userAccessor.isPresent(username);
+        return userAccessor.get(User.builder()
+                .username(username)
+                .build()).isPresent();
     }
 
-    public Boolean isValid(User user) {
-        return Objects.nonNull(userAccessor.get(user));
+    public Map<String, String> getQuestions() {
+        return userAccessor.getQuestions();
     }
 }

@@ -11,7 +11,5 @@ public interface UserAccessor {
 
     Optional<User> get(User user);
 
-    Boolean isPresent(String username);
-
     Map<String, String> getQuestions();
 }
