@@ -30,6 +30,10 @@ public class Constants {
 
     public static final String USE = "USE DATABASE";
 
+    public static final String DROP_TABLE = "DROP TABLE";
+
+    public static final String CREATE_DATABASE = "CREATE DATABASE";
+
     public static final String START_TRANSACTION = "START TRANSACTION";
 
     public static final String DB_DIRECTORY = "storage/METADATA/";
