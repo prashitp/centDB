@@ -1,6 +1,7 @@
 package com.example.services.accessor;
 
 import com.example.models.User;
+import com.example.models.enums.Permission;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
@@ -25,39 +26,44 @@ public class UserAccessorImpl implements UserAccessor {
     @Override
     @SneakyThrows
     public Boolean save(User user) {
+        Boolean isSaved = true;
         String userString = user.getUsername().concat(PIPE_DELIMITER)
                 .concat(user.getPassword()).concat(PIPE_DELIMITER)
                 .concat(user.getPermission().name()).concat(PIPE_DELIMITER);
 
         String answers = "";
-        for (Map.Entry<String, String> entry : user.getAnswers().entrySet()) {
-            answers = answers.concat(entry.getKey()).concat(COLON_DELIMITER)
-                    .concat(entry.getValue()).concat(PIPE_DELIMITER);
+        if (Objects.nonNull(user.getAnswers())) {
+            for (Map.Entry<String, String> entry : user.getAnswers().entrySet()) {
+                answers = answers.concat(entry.getKey()).concat(COLON_DELIMITER)
+                        .concat(entry.getValue()).concat(PIPE_DELIMITER);
+            }
         }
 
         fileWriter.write(userString.concat(answers).concat("\n"));
         fileWriter.flush();
-        return null;
+        return isSaved;
     }
 
     @Override
     public Optional<User> get(User user) {
         Optional<List<String>> optional = getLine(user.getUsername());
+        Map<String, String> answers = new HashMap<>();
         if (optional.isPresent()) {
             List<String> details = optional.get();
-            if (user.getUsername().equals(details.get(0)) && user.getPassword().equals(details.get(1))) {
+            if (user.getUsername().equals(details.get(0))) {
+                for (int i = 3; i < details.size(); i++) {
+                    String[] answer = details.get(i).split("\\:");
+                    answers.put(answer[0], answer[1]);
+                }
                 return Optional.of(User.builder()
                         .username(details.get(0))
                         .password(details.get(1))
+                        .permission(Permission.valueOf(details.get(2)))
+                        .answers(answers)
                         .build());
             }
         }
         return Optional.empty();
-    }
-
-    @Override
-    public Boolean isPresent(String username) {
-        return getLine(username).isPresent();
     }
 
     @SneakyThrows
