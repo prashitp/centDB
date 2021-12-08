@@ -1,0 +1,5 @@
+User: TEST, Timestamp: 2021-12-08 at 17:47:03 AST; Database: CENT_DB1; Tables: 2; Message: Operation failed Index 2 out of bounds for length 1
+User: TEST, Timestamp: 2021-12-08 at 17:49:39 AST; Database: CENT_DB1; Tables: 2; Message: Operation failed Index 2 out of bounds for length 1
+User: TEST, Timestamp: 2021-12-08 at 17:49:56 AST; Database: CENT_DB1; Tables: 2; Message: Operation failed No match found
+User: TEST, Timestamp: 2021-12-08 at 17:51:04 AST; Database: CENT_DB1; Tables: 2; Message: Database created
+User: TEST, Timestamp: 2021-12-08 at 17:52:07 AST; Database: CENT_DB1; Tables: 2; Message: Table created
