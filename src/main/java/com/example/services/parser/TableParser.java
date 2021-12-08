@@ -5,7 +5,6 @@ import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
 import com.example.util.QueryUtil;
 import com.example.util.StringUtil;
-import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
@@ -47,11 +46,12 @@ public class TableParser {
     public TableQuery update(String query, Metadata metadata) {
         Table table = QueryUtil.getTable(metadata, StringUtil.match(query, UPDATE, SET));
         Condition condition = getCondition(query);
-        Pair<String, String> fieldPair = getField(query, SET);
+        Map<String, String> fieldPair = getField(query, SET);
+        Map.Entry<String, String> fieldEntry = fieldPair.entrySet().stream().findFirst().get();
 
         Field field = Field.builder()
-                .column(QueryUtil.getColumn(table, fieldPair.getKey()))
-                .value(fieldPair.getValue())
+                .column(QueryUtil.getColumn(table, fieldEntry.getKey()))
+                .value(fieldEntry.getValue())
                 .build();
 
         return TableQuery.builder()
@@ -92,7 +92,7 @@ public class TableParser {
         return string.replaceAll("[()]", "");
     }
 
-    private Pair<String, String> getField(String string, String limiter) {
+    private Map<String, String> getField(String string, String limiter) {
         String field;
         if (string.contains(WHERE)) {
             field = StringUtil.match(string, limiter, WHERE);
@@ -104,8 +104,7 @@ public class TableParser {
         String column = strings[0].trim();
         String value = strings[2].trim();
 
-        return new Pair<>(column, value);
-
+        return Collections.singletonMap(column, value);
     }
 
     private String getTable(String query, String limiter) {
