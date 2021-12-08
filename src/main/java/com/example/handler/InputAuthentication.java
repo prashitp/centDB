@@ -4,6 +4,8 @@ import com.example.models.context.LogContext;
 import com.example.models.User;
 import com.example.models.enums.Permission;
 import com.example.services.UserService;
+import com.example.services.logs.GeneralLogService;
+import com.example.services.logs.LogService;
 import com.example.util.StringUtil;
 
 import java.util.HashMap;
@@ -67,6 +69,7 @@ public class InputAuthentication {
     }
 
     public static void login(Scanner scanner) {
+        LogService generalLogService;
         UserService userService = new UserService();
         Map<String, String> questions = userService.getQuestions();
 
@@ -96,6 +99,8 @@ public class InputAuthentication {
             }
             LogContext.setUser(optional.get());
             System.out.print("Login Successful \n");
+            generalLogService = GeneralLogService.getInstance();
+            generalLogService.log("User logged in");
         }
     }
 }

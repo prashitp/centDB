@@ -18,21 +18,18 @@ public class TableProcessor {
     }
 
     @SneakyThrows
-    public Boolean delete(TableQuery tableQuery) {
-        tableAccessor.delete(tableQuery);
-        return true;
+    public List<Row> delete(TableQuery tableQuery) {
+       return tableAccessor.delete(tableQuery);
     }
 
     @SneakyThrows
-    public Boolean update(TableQuery tableQuery) {
-        tableAccessor.update(tableQuery);
-        return true;
+    public List<Row> update(TableQuery tableQuery) {
+        return tableAccessor.update(tableQuery);
     }
 
     @SneakyThrows
-    public Boolean insert(TableQuery tableQuery) {
-        tableAccessor.insert(tableQuery);
-        return true;
+    public List<Row> insert(TableQuery tableQuery) {
+        return tableAccessor.insert(tableQuery);
     }
 
     @SneakyThrows
