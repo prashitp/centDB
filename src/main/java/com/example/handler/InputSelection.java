@@ -47,6 +47,7 @@ public class InputSelection {
                 break;
             case "3":
                 System.out.print("Reverse Engineering selected \n");
+                InputOperation.generateERD(scanner);
             case "4":
                 System.exit(0);
             default:
