@@ -10,7 +10,9 @@ public class Constants {
 
     public static final String COMMA = ",";
 
-    public static final String DELIMITER = "|";
+    public static final String PIPE_DELIMITER = "|";
+
+    public static final String COLON_DELIMITER = ":";
 
     public static final String WHERE = "WHERE";
 
@@ -26,7 +28,7 @@ public class Constants {
 
     public static final String VALUES = "VALUES";
 
-    public static final String USE = "USE";
+    public static final String USE = "USE DATABASE";
 
     public static final String START_TRANSACTION = "START TRANSACTION";
 
