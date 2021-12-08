@@ -83,8 +83,14 @@ public class ExportService {
                         break;
                     case PK:
                         bufferedWriter.write("PRIMARY KEY " + "(`" + line.split("\\|")[1] + "`)\n");
-                        bufferedWriter.write(");\n");
+                        if (bufferedReader.read() == -1){
+                            bufferedWriter.write(");\n");
+                        }else {
+                            bufferedWriter.write(")\n");
+                        }
                         break;
+                    case FK:
+                        bufferedWriter.write("FOREIGN KEY " + "(`" + line.split("\\|")[1] + "`)" + " REFERENCES " + line.split("\\|")[2] + "('"+ line.split("\\|")[3]+"`)"+ ");\n" );
                 }
             }
             bufferedWriter.close();
