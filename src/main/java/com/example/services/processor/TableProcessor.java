@@ -34,4 +34,10 @@ public class TableProcessor {
         tableAccessor.insert(tableQuery);
         return true;
     }
+
+    @SneakyThrows
+    public Boolean drop(TableQuery tableQuery) {
+        //tableAccessor.drop(tableQuery);
+        return true;
+    }
 }

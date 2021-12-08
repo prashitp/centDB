@@ -88,6 +88,16 @@ public class TableParser {
                 .build();
     }
 
+    public TableQuery drop(String query, Metadata metadata) {
+        Table table = QueryUtil.getTable(metadata, StringUtil.matchFrom(query, DROP_TABLE));
+
+        return TableQuery.builder()
+                .schemaName(metadata.getDatabaseName())
+                .tableName(table.getName())
+                .tableOperation(Operation.DROP)
+                .build();
+    }
+
     private String removeParenthesis(String string) {
         return string.replaceAll("[()]", "");
     }

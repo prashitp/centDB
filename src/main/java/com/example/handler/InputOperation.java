@@ -2,6 +2,7 @@ package com.example.handler;
 
 import com.example.models.*;
 import com.example.models.context.LogContext;
+import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
 import com.example.services.ExportService;
 import com.example.services.LogService;
@@ -15,6 +16,8 @@ import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
 import java.util.*;
+
+import static com.example.util.Constants.CREATE_DATABASE;
 
 
 public class InputOperation {
@@ -58,11 +61,27 @@ public class InputOperation {
 
             @Override
             public Void visitCreate() {
+                Entity entity = query.contains(CREATE_DATABASE) ? Entity.DATABASE : Entity.TABLE;
+                entity.accept(new Entity.EntityVisitor<Void>() {
+                    @Override
+                    public Void visitDatabase() {
+                        databaseParser.create(query);
+                        return null;
+                    }
+
+                    @Override
+                    public Void visitTable() {
+                        return null;
+                    }
+                });
                 return null;
             }
 
             @Override
             public Void visitDrop() {
+                checkDatabase(metadata);
+                TableQuery tableQuery = tableParser.drop(query, metadata);
+                tableProcessor.drop(tableQuery);
                 return null;
             }
 
@@ -104,12 +123,14 @@ public class InputOperation {
             }
 
             @Override
-            public Void visitAlter() {
+            public Void visitCommit() {
                 return null;
             }
 
             @Override
             public Void visitStartTransaction() {
+                checkDatabase(metadata);
+                InputTransaction.query(scanner, metadata);
                 return null;
             }
         });
@@ -126,7 +147,7 @@ public class InputOperation {
     public static void generateERD(Scanner scanner) {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
-        ExportService exportService = new ExportService();
-        exportService.createErd(databaseName);
+
+        ExportService.createErd(databaseName);
     }
 }

@@ -42,9 +42,9 @@ public enum Operation {
         }
     },
 
-    ALTER {
+    COMMIT {
         public <E> E accept(OperationVisitor<E> visitor) {
-            return visitor.visitAlter();
+            return visitor.visitCommit();
         }
     },
 
@@ -64,7 +64,7 @@ public enum Operation {
         E visitSelect();
         E visitUpdate();
         E visitDelete();
-        E visitAlter();
+        E visitCommit();
         E visitStartTransaction();
     }
 
