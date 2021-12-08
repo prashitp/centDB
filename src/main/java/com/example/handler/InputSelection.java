@@ -1,10 +1,9 @@
 package com.example.handler;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class InputSelection {
-    public static void authentication(Scanner scanner) throws IOException {
+    public static void authentication(Scanner scanner) {
         System.out.print("\n\nSelect an option: \n");
         System.out.print("1. Register \n");
         System.out.print("2. Login \n");
@@ -29,7 +28,7 @@ public class InputSelection {
         }
     }
 
-    public static void operation(Scanner scanner) throws IOException {
+    public static void operation(Scanner scanner) {
         System.out.print("\n\nSelect an option: \n");
         System.out.print("1. Query \n");
         System.out.print("2. Export \n");
@@ -48,7 +47,7 @@ public class InputSelection {
                 break;
             case "3":
                 System.out.print("Reverse Engineering selected \n");
-                    InputOperation.generateERD(scanner);
+                InputOperation.generateERD(scanner);
             case "4":
                 System.exit(0);
             default:

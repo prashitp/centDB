@@ -14,7 +14,6 @@ import com.example.services.processor.TableProcessor;
 import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.util.*;
 
 
@@ -131,7 +130,7 @@ public class InputOperation {
                 .get();
     }
 
-    public static void generateERD(Scanner scanner) throws IOException {
+    public static void generateERD(Scanner scanner) {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
         Erd erd = new Erd();

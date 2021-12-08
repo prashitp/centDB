@@ -1,178 +1,133 @@
 package com.example.models.erd;
+import com.example.models.Column;
+import com.example.models.ForeignKey;
 import com.example.models.Metadata;
+import com.example.models.Table;
 import com.example.models.enums.Entity;
 import com.example.services.metadata.MetadataService;
 import com.example.services.metadata.MetadataServiceImpl;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Erd {
-    public void generate(String databaseName) throws IOException {
-    File file = new File("storage/erd/"+databaseName+"_ERD.txt");
-        file.createNewFile();
-        FileWriter fileWriter = new FileWriter(file, true);;
+    public void linePrinter( FileWriter fileWriter) throws IOException {
+        fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+    }
+    public void valuePrinter( FileWriter fileWriter, String value) throws IOException {
+        fileWriter.write(String.format("%20s |", value));
 
-        MetadataService metadataService = new MetadataServiceImpl();
-        Metadata metadata = metadataService.read(Entity.DATABASE, databaseName);
-        metadata.getAllTablesFromDatabase()
-                .forEach(table -> {
-                    if (table.getForeignKeys() != null) {
-                        System.out.println(table.getForeignKeys().size());
-                    }
-                    else {
-                        System.out.println("hello");
-                    }
+    }
+    public void generate(String databaseName) {
+            try {
+            File file = new File("storage/erd/" + databaseName + "_ERD.txt");
+            file.createNewFile();
+            FileWriter fileWriter = new FileWriter(file, true);
+            ;
+
+            MetadataService metadataService = new MetadataServiceImpl();
+            Metadata metadata = metadataService.read(Entity.DATABASE, databaseName);
+                for (Table table : metadata.getAllTablesFromDatabase()) {
                     try {
-                        fileWriter.write(String.format("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
-                        fileWriter.write(String.format("\n%80s%n", "Table Name:"+table.getName()));
-                        fileWriter.write(String.format("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+                        linePrinter(fileWriter);
+                        fileWriter.write(String.format("\n%80s", "Table Name:" + table.getName()));
+                        linePrinter(fileWriter);
+
                         fileWriter.write(String.format("\n%-25s |", "Column Names"));
-                        table.getColumns().forEach(col ->
-                                {
-                                    try {
-                                        fileWriter.write(String.format("%20s |", col.getName()));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                        );
-                        fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+                        for (Column column : table.getColumns()) {
+                            valuePrinter(fileWriter, column.getName());
+                        }
+                        linePrinter(fileWriter);
+
                         fileWriter.write(String.format("\n%-25s |", "Column Type"));
-                        table.getColumns().forEach(col ->
-                                {
-                                    try {
-                                        fileWriter.write(String.format("%20s |", col.getDataType()));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                        );
-                        fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+                        for (Column column : table.getColumns()) {
+                            valuePrinter(fileWriter, column.getDataType());
+                        }
+                        linePrinter(fileWriter);
+
                         fileWriter.write(String.format("\n%-25s |", "Primary Key"));
-                        table.getColumns().forEach(col -> {
-                                    try {
-                                        if (table.getPrimaryKey().getName().equals(col.getName())) {
-                                            fileWriter.write(String.format("%20s |", "PK"));
-                                        }
-                                        else {
-                                            fileWriter.write(String.format("%20s |", ""));
-                                        }
-                                    }
-                                    catch (Exception e) {
-                                        try {
-                                            fileWriter.write(String.format("%20s |", ""));
-                                        } catch (IOException ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
+                        for (Column column : table.getColumns()) {
+                            try {
+                                if (table.getPrimaryKey().getName().equals(column.getName())) {
+                                    valuePrinter(fileWriter, "PK");
+                                } else {
+                                    valuePrinter(fileWriter, "");
                                 }
-                        );
+                            } catch (Exception e) {
+                                valuePrinter(fileWriter, "");
+                            }
+                        }
+
                         if (table.getForeignKeys() != null) {
                             System.out.println(table.getForeignKeys().size());
-                            fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+                            linePrinter(fileWriter);
+
                             fileWriter.write(String.format("\n%-25s |", "Foreign Key"));
-                            table.getColumns().forEach(col -> {
-                                        try {
-                                            table.getForeignKeys().forEach(fKey -> {
-                                                if (col.getName().equals(fKey.getForeignKeyColumn())) {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |", "FK"));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                                else {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |", ""));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }});
-
-                                        } catch (Exception e) {
-                                            try {
-                                                fileWriter.write(String.format("%20s |", ""));
-                                            } catch (IOException ex) {
-                                                ex.printStackTrace();
-                                            }
+                            for (Column column : table.getColumns()) {
+                                try {
+                                    for (ForeignKey fKey : table.getForeignKeys()) {
+                                        if (column.getName().equals(fKey.getForeignKeyColumn())) {
+                                            valuePrinter(fileWriter, "FK");
+                                        } else {
+                                            valuePrinter(fileWriter, "");
                                         }
                                     }
-                            );
-                            fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+
+                                } catch (Exception e) {
+                                    valuePrinter(fileWriter, "");
+                                }
+                            }
+                            linePrinter(fileWriter);
+
                             fileWriter.write(String.format("\n%-25s |", "Reference Table Name"));
-                            table.getColumns().forEach(col -> {
-                                        try {
-                                            table.getForeignKeys().forEach(fKey -> {
-                                                if (col.getName().equals(fKey.getForeignKeyColumn())) {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |",fKey.getReferenceTableName()));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                                else {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |", ""));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }});
+                            for (Column column : table.getColumns()) {
+                                try {
+                                    for (ForeignKey fKey : table.getForeignKeys()) {
+                                        if (column.getName().equals(fKey.getForeignKeyColumn())) {
+                                            valuePrinter(fileWriter, fKey.getReferenceTableName());
 
-                                        } catch (Exception e) {
-                                            try {
-                                                fileWriter.write(String.format("%20s |", ""));
-                                            } catch (IOException ex) {
-                                                ex.printStackTrace();
-                                            }
-
+                                        } else {
+                                            valuePrinter(fileWriter, "");
                                         }
                                     }
-                            );
-                            fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+
+                                } catch (Exception e) {
+                                    valuePrinter(fileWriter, "");
+
+                                }
+                            }
+                            linePrinter(fileWriter);
+
                             fileWriter.write(String.format("\n%-25s |", "Reference Column Name"));
-                            table.getColumns().forEach(col -> {
-                                        try {
-                                            table.getForeignKeys().forEach(fKey -> {
-                                                if (col.getName().equals(fKey.getForeignKeyColumn())) {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |", fKey.getReferenceColumnName()));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                                else {
-                                                    try {
-                                                        fileWriter.write(String.format("%20s |", ""));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }});
+                            for (Column col : table.getColumns()) {
+                                try {
+                                    for (ForeignKey fKey : table.getForeignKeys()) {
+                                        if (col.getName().equals(fKey.getForeignKeyColumn())) {
+                                            valuePrinter(fileWriter, fKey.getReferenceColumnName());
+                                        } else {
+                                            valuePrinter(fileWriter, "");
 
-                                        } catch (Exception e) {
-                                            try {
-                                                fileWriter.write(String.format("%20s |", ""));
-                                            } catch (IOException ex) {
-                                                ex.printStackTrace();
-                                            }
                                         }
                                     }
-                            );
+
+                                } catch (Exception e) {
+                                    valuePrinter(fileWriter, "");
+                                }
+                            }
                         }
-                        fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
-                        fileWriter.write(String.format("\n\n\n"));
-                    }
-                    catch (Exception e) {
-                        try {
-                            fileWriter.write(String.format("%20s |", ""));
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
+                        linePrinter(fileWriter);
+                        fileWriter.write(String.format("\n\n"));
+                    } catch (Exception e) {
+                        valuePrinter(fileWriter, "");
                     }
 
-                });
-        fileWriter.close();
-        System.out.println("ERD is created for database "+databaseName+" with the name of "+databaseName+"_ERD.txt");
+                }
+                fileWriter.close();
+            System.out.println("ERD is created for database " + databaseName + " with the name of " + databaseName + "_ERD.txt");
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
     }
 }
 
