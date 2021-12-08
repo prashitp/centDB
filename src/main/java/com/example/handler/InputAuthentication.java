@@ -99,8 +99,6 @@ public class InputAuthentication {
             }
             LogContext.setUser(optional.get());
             System.out.print("Login Successful \n");
-            generalLogService = GeneralLogService.getInstance();
-            generalLogService.log("User logged in");
         }
     }
 }
