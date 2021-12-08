@@ -5,11 +5,16 @@ import com.example.models.Field;
 import com.example.models.enums.Datatype;
 import com.example.models.enums.Operator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class OperandProcessorImpl implements OperandProcessor {
 
     public static final String NULL = "NULL";
+    public static final String DATE_TIME_FORMAT = "dd-M-yyyy hh:mm:ss";
 
     @Override
     public boolean process(Field field, Condition condition) {
@@ -63,6 +68,14 @@ public class OperandProcessorImpl implements OperandProcessor {
             }
         }
 
+        else if (fieldDatatype.equalsIgnoreCase(Datatype.DATETIME.name())) {
+            String operand1Value = field.getValue().toString();
+            String operand2Value = operand2;
+            if (operand1Value.equals(operand2Value)) {
+                return true;
+            }
+        }
+
         return matches;
     }
 
@@ -85,7 +98,17 @@ public class OperandProcessorImpl implements OperandProcessor {
 
         else if (fieldDatatype.equalsIgnoreCase(Datatype.VARCHAR.name())) {
             throw new Exception("Unsupported operator " + condition.getOperator().name()
-            + " for datatype " + Datatype.VARCHAR.name());
+                    + " for datatype " + Datatype.VARCHAR.name());
+        }
+
+        else if (fieldDatatype.equalsIgnoreCase(Datatype.DATETIME.name())) {
+            String operand1Value = field.getValue().toString();
+            String operand2Value = operand2;
+            Date date1 = getDate(operand1Value);
+            Date date2 = getDate(operand2Value);
+            if (date1.after(date2)) {
+                return true;
+            }
         }
 
         return matches;
@@ -112,7 +135,30 @@ public class OperandProcessorImpl implements OperandProcessor {
             throw new Exception("Unsupported operator " + condition.getOperator().name()
                     + " for datatype " + Datatype.VARCHAR.name());
         }
+
+        else if (fieldDatatype.equalsIgnoreCase(Datatype.DATETIME.name())) {
+            String operand1Value = field.getValue().toString();
+            String operand2Value = operand2;
+            Date date1 = getDate(operand1Value);
+            Date date2 = getDate(operand2Value);
+            if (date1.before(date2)) {
+                return true;
+            }
+        }
+
         return matches;
+
+    }
+
+    private Date getDate(String operand) {
+        Date date = null;
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.ENGLISH);
+        try {
+            date = formatter.parse(operand);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
 }

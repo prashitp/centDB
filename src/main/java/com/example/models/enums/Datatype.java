@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum Datatype {
-    VARCHAR, INTEGER;
+    VARCHAR, INTEGER, DATETIME;
 
     public static List<String> getAllDatatypes() {
         return Arrays.stream(Datatype.values()).map(Datatype::name).collect(Collectors.toList());
