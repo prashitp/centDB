@@ -34,6 +34,8 @@ public class Constants {
 
     public static final String CREATE_DATABASE = "CREATE DATABASE";
 
+    public static final String CREATE_TABLE = "CREATE TABLE";
+
     public static final String START_TRANSACTION = "START TRANSACTION";
 
     public static final String DB_DIRECTORY = "storage/METADATA/";
