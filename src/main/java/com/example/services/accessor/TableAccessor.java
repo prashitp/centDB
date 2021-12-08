@@ -15,4 +15,8 @@ public interface TableAccessor {
 
     List<Row> delete(TableQuery query) throws Exception;
 
+    Boolean drop(TableQuery query) throws Exception;
+
+    Boolean create(TableQuery query) throws Exception;
+
 }
