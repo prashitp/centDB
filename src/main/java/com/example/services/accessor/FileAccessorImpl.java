@@ -4,6 +4,7 @@ import com.example.exceptions.InvalidOperation;
 import com.example.models.*;
 import com.example.models.enums.Entity;
 
+import com.example.services.metadata.MetadataService;
 import com.example.services.metadata.MetadataServiceImpl;
 import com.example.models.enums.Operation;
 
@@ -214,6 +215,40 @@ public class FileAccessorImpl implements TableAccessor {
         }
         validateQuery(query);
         return processDelete(query);
+    }
+
+    @Override
+    public Boolean drop(TableQuery query) throws Exception {
+        Operation operation = query.getTableOperation();
+        if (!Operation.DROP.equals(operation)) {
+            throw new InvalidOperation("Invalid operation " + operation.name());
+        }
+        MetadataService metadataService = new MetadataServiceImpl();
+        Metadata metadataDB = metadataService.read(Entity.DATABASE, query.getSchemaName());
+
+        Metadata metadataTable = new Metadata();
+        metadataTable.setDatabase(metadataDB.getDatabase());
+        metadataTable.getDatabase().setTables(List.of(metadataDB.getTableByName(query.getTableName())));
+
+        metadataService.delete(Entity.TABLE, metadataTable);
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean create(TableQuery query) throws Exception {
+        Operation operation = query.getTableOperation();
+        if (!Operation.CREATE.equals(operation)) {
+            throw new InvalidOperation("Invalid operation " + operation.name());
+        }
+        Metadata metadataTable = new Metadata();
+        Database database = Database.builder().name(query.getSchemaName()).build();
+        List<Column> columns = query.getColumns();
+        Table table = Table.builder().name(query.getTableName()).columns(columns).build();
+        database.setTables(List.of(table));
+        metadataTable.setDatabase(database);
+        MetadataService metadataService = new MetadataServiceImpl();
+        metadataService.write(Entity.TABLE, metadataTable);
+        return Boolean.TRUE;
     }
 
     private synchronized List<Row> processDelete(TableQuery query) throws Exception {

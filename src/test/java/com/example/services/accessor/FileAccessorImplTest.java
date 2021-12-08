@@ -2,8 +2,11 @@ package com.example.services.accessor;
 
 import com.example.models.*;
 import com.example.models.enums.Datatype;
+import com.example.models.enums.Entity;
 import com.example.models.enums.Operation;
 import com.example.models.enums.Operator;
+import com.example.services.metadata.MetadataService;
+import com.example.services.metadata.MetadataServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,10 +20,11 @@ public class FileAccessorImplTest {
     private static final String SCHEMA_NAME = "CENT_DB1";
     private static final String TABLE_NAME = "BIRDS";
 
+    private FileAccessorImpl accessor = new FileAccessorImpl();
+
     @Test
     public void testSelectWithoutCondition() throws Exception {
 //        SELECT * FROM BIRDS;
-        FileAccessorImpl accessor = new FileAccessorImpl();
         Column column1 = new Column();
         column1.setName("BIRD_ID");
         Column column2 = new Column();
@@ -273,6 +277,46 @@ public class FileAccessorImplTest {
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME).fields(List.of(field1, field2))
                 .tableOperation(Operation.UPDATE).conditions(List.of(condition)).build();
         List<Row> output = accessor.update(query);
+    }
+
+    @Test
+    public void createTable() throws Exception {
+//        CREATE TABLE STUDENT
+            String dbName = "DB2";
+            String tableName = "STUDENT";
+            String INTEGER = "INTEGER";
+            String VARCHAR ="VARCHAR";
+            Column id = Column.builder().name("ID").dataType(INTEGER).build();
+            Column firstName = Column.builder().name("FIRST_NAME").dataType(VARCHAR).build();
+            Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
+            Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
+            Database database = Database.builder().name(dbName).build();
+            List<Column> columns = Arrays.asList(id, firstName, lastName, email);
+            Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+            database.setTables(Arrays.asList(table));
+            TableQuery query = TableQuery.builder().schemaName(dbName).tableName(tableName).columns(columns).build();
+            query.setTableOperation(Operation.CREATE);
+            accessor.create(query);
+    }
+
+    @Test
+    public void dropTable() throws Exception {
+//        DROP TABLE STUDENT
+        String dbName = "DB2";
+        String tableName = "STUDENT";
+        String INTEGER = "INTEGER";
+        String VARCHAR ="VARCHAR";
+        Column id = Column.builder().name("ID").dataType(INTEGER).build();
+        Column firstName = Column.builder().name("FIRST_NAME").dataType(VARCHAR).build();
+        Column lastName = Column.builder().name("LAST_NAME").dataType(VARCHAR).build();
+        Column email = Column.builder().name("EMAIL_ID").dataType(VARCHAR).build();
+        Database database = Database.builder().name(dbName).build();
+        List<Column> columns = Arrays.asList(id, firstName, lastName, email);
+        Table table = Table.builder().name(tableName).columns(columns).primaryKey(id).build();
+        database.setTables(Arrays.asList(table));
+        TableQuery query = TableQuery.builder().schemaName(dbName).tableName(tableName).columns(columns).build();
+        query.setTableOperation(Operation.DROP);
+        accessor.drop(query);
     }
 
 }
