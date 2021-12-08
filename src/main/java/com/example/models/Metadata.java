@@ -1,12 +1,11 @@
 package com.example.models;
 
+import com.example.models.enums.Operation;
+import com.example.services.accessor.FileAccessorImpl;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Setter
@@ -61,6 +60,23 @@ public class Metadata {
             table = optionalTable.isPresent() ? optionalTable.get() : null;
         }
         return table;
+    }
+
+    public List<Table> getAllTablesWithRows() {
+        FileAccessorImpl accessor = new FileAccessorImpl();
+        List<Table> tables = new ArrayList<>();
+        database.getTables().forEach(table -> {
+            TableQuery query = TableQuery.builder().schemaName(database.getName()).tableName(table.getName())
+                    .columns(table.getColumns()).tableOperation(Operation.SELECT).build();
+            try {
+                List<Row> output = accessor.read(query);
+                table.setRows(output);
+            } catch (Exception e) {
+               System.out.println("Error while reading file");
+            }
+            tables.add(table);
+        });
+        return tables;
     }
 
 }
