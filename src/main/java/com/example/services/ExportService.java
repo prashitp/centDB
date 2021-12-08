@@ -1,9 +1,6 @@
 package com.example.services;
 
-import com.example.models.Column;
-import com.example.models.ForeignKey;
-import com.example.models.Metadata;
-import com.example.models.Table;
+import com.example.models.*;
 import com.example.models.enums.Entity;
 import com.example.models.enums.MetadataToken;
 import com.example.services.metadata.MetadataService;
@@ -12,6 +9,7 @@ import com.example.util.Constants;
 
 import java.io.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ExportService {
@@ -142,6 +140,19 @@ public class ExportService {
             bufferReader.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void printRow(List<Row> rowList){
+        for (Row row: rowList){
+            List<Field> fields = row.getAllFieldsOfRow();
+            System.out.format("---------------------------------------------\n");
+            System.out.format("%32s", row.getFields());
+            for (Field field: fields){
+                System.out.format("---------------------------------------------\n");
+                System.out.format("%32s%10s", field.getColumn(), field.getValue());
+                System.out.format("---------------------------------------------\n");
+            }
         }
     }
 

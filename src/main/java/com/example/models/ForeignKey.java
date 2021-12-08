@@ -17,4 +17,27 @@ public class ForeignKey {
 
     private String referenceColumnName;
 
+    public String getForeignKeyColumn() {
+        return foreignKeyColumn;
+    }
+
+    public void setForeignKeyColumn(String foreignKeyColumn) {
+        this.foreignKeyColumn = foreignKeyColumn;
+    }
+
+    public String getReferenceTableName() {
+        return referenceTableName;
+    }
+
+    public void setReferenceTableName(String referenceTableName) {
+        this.referenceTableName = referenceTableName;
+    }
+
+    public String getReferenceColumnName() {
+        return referenceColumnName;
+    }
+
+    public void setReferenceColumnName(String referenceColumnName) {
+        this.referenceColumnName = referenceColumnName;
+    }
 }
