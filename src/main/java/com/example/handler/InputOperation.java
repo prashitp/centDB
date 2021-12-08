@@ -135,6 +135,6 @@ public class InputOperation {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
         Erd erd = new Erd();
-        erd.erdGenerator(databaseName);
+        erd.generate(databaseName);
     }
 }
