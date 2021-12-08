@@ -11,8 +11,8 @@ public interface TableAccessor {
 
     List<Row> insert(TableQuery table) throws Exception;
 
-    int update(TableQuery table) throws Exception;
+    List<Row> update(TableQuery table) throws Exception;
 
-    int delete(TableQuery query) throws Exception;
+    List<Row> delete(TableQuery query) throws Exception;
 
 }

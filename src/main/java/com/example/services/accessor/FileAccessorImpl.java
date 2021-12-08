@@ -8,11 +8,9 @@ import com.example.services.metadata.MetadataServiceImpl;
 import com.example.models.enums.Operation;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class FileAccessorImpl implements TableAccessor {
@@ -22,6 +20,7 @@ public class FileAccessorImpl implements TableAccessor {
 
     final static String TABLE_DATA_FILE_PREFIX = "TB_";
     final static String TABLE_DATA_FILE_SUFFIX = ".txt";
+    final static String TABLE_TEMP_FILE_PREFIX = "TB_TEMP_";
 
     final static String DATA_BASE_DIRECTORY = "storage/";
     final static String PATH_SEPARATOR = "/";
@@ -92,7 +91,7 @@ public class FileAccessorImpl implements TableAccessor {
     private boolean validateQuery(TableQuery query) throws Exception {
         boolean isValid = true;
         String tableName = query.getTableName();
-        String schemaName = query.getSchemaName();;
+        String schemaName = query.getSchemaName();
         if (Objects.isNull(tableName) || Objects.isNull(schemaName)) {
             return false;
         }
@@ -112,31 +111,152 @@ public class FileAccessorImpl implements TableAccessor {
                 break;
 
             case UPDATE:
+                if (Objects.isNull(query.getFields()) || query.getFields().isEmpty()) {
+                    return false;
+                }
+                for (Field field : query.getFields()) {
+                    if (Objects.isNull(field.getColumn()) || Objects.isNull(field.getColumn().getName())) {
+                        return false;
+                    }
+                }
                 break;
 
             case DELETE:
+//              DELETE query validation
                 break;
         }
         return isValid;
-
     }
 
     @Override
-    public int update(TableQuery query) throws Exception {
+    public List<Row> update(TableQuery query) throws Exception {
         Operation operation = query.getTableOperation();
         if (!Operation.UPDATE.equals(operation)) {
             throw new InvalidOperation("Invalid operation");
         }
-        return 0;
+        validateQuery(query);
+        return processUpdate(query);
     }
 
+    private synchronized List<Row> processUpdate(TableQuery query) throws Exception {
+        List<Row> updatedRows = new ArrayList<>();
+        TableQuery selectQuery = query;
+        selectQuery.setTableOperation(Operation.SELECT);
+        List<Row> rows = read(selectQuery);
+        if (rows.isEmpty()) {
+            return updatedRows;
+        }
+        List<String> stringRows = generateRowString(rows, query.getSchemaName(), query.getTableName());
+
+        String tableFileName = getDataFilePath(query.getSchemaName(), query.getTableName());
+        String tempFileName = getTempFilePath(query.getSchemaName(), query.getTableName());
+        Path tableFilePath = Paths.get(tableFileName);
+        Path tempFilePath = Path.of(tempFileName);
+        Files.createFile(tempFilePath);
+//        if set to true need to rollback the entire operation
+        AtomicBoolean isException = new AtomicBoolean(false);
+
+        try {
+            Files.lines(tableFilePath).map(line -> {
+                if (stringRows.contains(line)) {
+//                    line to row
+                    Map<Integer, String> map = getColumnValuesFromRowLines(line);
+                    Row oldEntry = generateRow(map, columns);
+//                    update the value here
+                    Row newEntry = updateRows(oldEntry, query.getFields());
+                    updatedRows.add(newEntry);
+
+//                    line to line
+                    return generateRowString(Arrays.asList(newEntry), query.getSchemaName(), query.getTableName()).stream().findFirst().get();
+                } else
+                {
+                    return line;
+                }
+            }).forEach(line -> {
+                try {
+                    appendToFile(tempFilePath, List.of(line));
+                } catch (Exception exception) {
+                    System.out.println("Exception while writing to new data file");
+                    isException.set(true);
+                    exception.printStackTrace();
+                }
+            });
+        }
+        finally {
+            if(Files.exists(tableFilePath) && Files.exists(tempFilePath) && !isException.get()) {
+                Files.move(tempFilePath, tableFilePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else {
+//                Perform necessary cleanup on exception
+            }
+        }
+        return updatedRows;
+    }
+
+    private Row updateRows(Row dbRow, List<Field> input) {
+        Row updatedRow = new Row(dbRow);
+        for (Field field : input) {
+            Field dbField = updatedRow.getFieldByColumnName(field.getColumn().getName());
+            if (Objects.isNull(field.getValue()) || field.getValue().toString().isBlank()) {
+                dbField.setValue(null);
+            }
+            else {
+                dbField.setValue(field.getValue());
+            }
+        }
+        return updatedRow;
+    }
     @Override
-    public int delete(TableQuery query) throws Exception {
+    public List<Row> delete(TableQuery query) throws Exception {
         Operation operation = query.getTableOperation();
         if (!Operation.DELETE.equals(operation)) {
             throw new InvalidOperation("Invalid operation");
         }
-        return 0;
+        validateQuery(query);
+        return processDelete(query);
+    }
+
+    private synchronized List<Row> processDelete(TableQuery query) throws Exception {
+        TableQuery selectQuery = query;
+        selectQuery.setTableOperation(Operation.SELECT);
+        List<Row> rows = read(selectQuery);
+        if (rows.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> stringRows = generateRowString(rows, query.getSchemaName(), query.getTableName());
+        String tableFileName = getDataFilePath(query.getSchemaName(), query.getTableName());
+        String tempFileName = getTempFilePath(query.getSchemaName(), query.getTableName());
+        Path tableFilePath = Paths.get(tableFileName);
+        Path tempFilePath = Path.of(tempFileName);
+        Files.createFile(tempFilePath);
+//        if set to true need to rollback the entire operation
+        AtomicBoolean isException = new AtomicBoolean(false);
+        try {
+            Files.lines(tableFilePath).filter(row -> {
+                if (stringRows.contains(row)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }).forEach(line -> {
+                try {
+                    appendToFile(tempFilePath, List.of(line));
+                } catch (Exception exception) {
+                    System.out.println("Exception while writing to new data file");
+                    isException.set(true);
+                    exception.printStackTrace();
+                }
+            });
+        }
+        finally {
+            if(Files.exists(tableFilePath) && Files.exists(tempFilePath) && !isException.get()) {
+                Files.move(tempFilePath, tableFilePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else {
+//                Perform necessary cleanup on exception
+            }
+        }
+        return rows;
     }
 
     /*
@@ -161,7 +281,7 @@ public class FileAccessorImpl implements TableAccessor {
         try {
             rows = Files.lines(filePath)
                     .map(line -> getColumnValuesFromRowLines(line))
-                    .map(map -> generateRow(map))
+                    .map(map -> generateRow(map, columns))
                     .filter(Objects::nonNull)
                     .filter(row -> filterRow(row, query.getConditions()))
                     .map(row -> getRequiredColumns(row, query.getColumns()))
@@ -181,7 +301,15 @@ public class FileAccessorImpl implements TableAccessor {
         return dataFilePath;
     }
 
-    private Row generateRow(Map<Integer, String> rowValue) {
+    private String getTempFilePath(String schemaName, String tableName) {
+        String dataFilePath = DATA_BASE_DIRECTORY +
+                schemaName.toUpperCase(Locale.ROOT) + PATH_SEPARATOR +
+                TABLE_TEMP_FILE_PREFIX + tableName.toUpperCase(Locale.ROOT) +
+                TABLE_DATA_FILE_SUFFIX;
+        return dataFilePath;
+    }
+
+    private Row generateRow(Map<Integer, String> rowValue, List<Column> columns) {
 //        Generate rows and filter what is required
         Row row = new Row();
         if (rowValue.size() != columns.size()) {
@@ -215,7 +343,7 @@ public class FileAccessorImpl implements TableAccessor {
     }
 
     private Row getRequiredColumns(Row row, List<Column> requiredColumns) {
-        if (requiredColumns.isEmpty()) {
+        if (requiredColumns == null ||  requiredColumns.isEmpty()) {
             return new Row(row);
         }
         Row requiredRow = new Row();

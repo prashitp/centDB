@@ -3,7 +3,7 @@ package com.example.handler;
 import com.example.models.*;
 import com.example.models.context.LogContext;
 import com.example.models.enums.Operation;
-import com.example.models.erd.Erd;
+import com.example.services.ExportService;
 import com.example.services.LogService;
 import com.example.services.accessor.FileAccessorImpl;
 import com.example.services.metadata.MetadataService;
@@ -128,7 +128,7 @@ public class InputOperation {
     public static void generateERD(Scanner scanner) {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
-        Erd erd = new Erd();
-        erd.generate(databaseName);
+        ExportService exportService = new ExportService();
+        exportService.createErd(databaseName);
     }
 }
