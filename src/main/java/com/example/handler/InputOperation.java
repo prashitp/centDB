@@ -71,6 +71,8 @@ public class InputOperation {
 
                     @Override
                     public Void visitTable() {
+                        TableQuery tableQuery = tableParser.create(query, metadata);
+                        tableProcessor.create(tableQuery);
                         return null;
                     }
                 });

@@ -98,6 +98,27 @@ public class TableParser {
                 .build();
     }
 
+    public TableQuery create(String query, Metadata metadata) {
+        String table = StringUtil.match(query, CREATE_TABLE, "\\(");
+        String[] columnStrings = removeParenthesis(StringUtil.matchFrom(query, table)).split(COMMA);
+        List<Column> columns = new ArrayList<>();
+
+        for (String column: columnStrings) {
+            String[] details = column.split("\\s");
+            columns.add(Column.builder()
+                    .name(details[0])
+                    .dataType(details[1])
+                    .build());
+        }
+
+        return TableQuery.builder()
+                .schemaName(metadata.getDatabaseName())
+                .tableName(table)
+                .columns(columns)
+                .tableOperation(Operation.CREATE)
+                .build();
+    }
+
     private String removeParenthesis(String string) {
         return string.replaceAll("[()]", "");
     }
