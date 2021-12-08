@@ -241,10 +241,11 @@ public class FileAccessorImpl implements TableAccessor {
             throw new InvalidOperation("Invalid operation " + operation.name());
         }
         Metadata metadataTable = new Metadata();
-        Database database = Database.builder().name(query.getSchemaName()).build();
-        List<Column> columns = query.getColumns();
-        Table table = Table.builder().name(query.getTableName()).columns(columns).build();
-        database.setTables(List.of(table));
+        List<Table> tablesToCreate = new ArrayList<>();
+        tablesToCreate.add(query.getTable());
+
+        Database database = Database.builder().name(query.getSchemaName()).tables(tablesToCreate).build();
+
         metadataTable.setDatabase(database);
         MetadataService metadataService = new MetadataServiceImpl();
         metadataService.write(Entity.TABLE, metadataTable);
