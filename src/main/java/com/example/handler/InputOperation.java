@@ -122,13 +122,6 @@ public class InputOperation {
             LogContext.setMetadata(metadata);
         }
     }
-    private static Table getTable(Metadata metadata, String tableName) {
-        return metadata.getAllTablesFromDatabase()
-                .stream()
-                .filter(e -> e.getName().equalsIgnoreCase(tableName))
-                .findFirst()
-                .get();
-    }
 
     public static void generateERD(Scanner scanner) {
         System.out.println("Enter the database name : ");
