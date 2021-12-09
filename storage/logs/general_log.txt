@@ -1,7 +1,4 @@
-User: TEST, Timestamp: 2021-12-08 at 17:43:46 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (0); Execution Time: 86 ms; Message: Query successful - USE DATABASE CENT_DB1
-User: TEST, Timestamp: 2021-12-08 at 17:44:21 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (0); Execution Time: 33 ms; Message: Query successful - SELECT * FROM BIRDS
-User: TEST, Timestamp: 2021-12-08 at 17:45:23 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (1); Execution Time: 25 ms; Message: Query successful - INSERT INTO MOVIES (ID,NAME,YEAR,RANK) VALUES (1,AVENGERS,2017,1)
-User: TEST, Timestamp: 2021-12-08 at 17:48:07 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (0); Execution Time: 45 ms; Message: Query successful - DELETE FROM MOVIES WHERE ID=1
-User: TEST, Timestamp: 2021-12-08 at 17:49:18 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (1); Execution Time: 22 ms; Message: Query successful - INSERT INTO MOVIES (ID,NAME,YEAR,RANK) VALUES (2,SPIDERMAN,2021,2)
-User: TEST, Timestamp: 2021-12-08 at 17:51:04 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (1); Execution Time: 17 ms; Message: Query successful - CREATE DATABASE TEMP
-User: TEST, Timestamp: 2021-12-08 at 17:52:07 AST; Database: CENT_DB1 (2); Tables: BIRDS (6) MOVIES (1); Execution Time: 12 ms; Message: Query successful - CREATE TABLE TEMP1 (ID INT, YEAR INT)
+User: TEST, Timestamp: 2021-12-08 at 19:57:57 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 131 ms; Message: Query successful - USE DATABASE CENT_DB1
+User: TEST, Timestamp: 2021-12-08 at 20:07:31 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 2538 ms; Message: Query successful - USE DATABASE CENT_DB1
+User: TEST, Timestamp: 2021-12-08 at 20:11:34 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 157 ms; Message: Query successful - USE DATABASE CENT_DB1
+User: TEST, Timestamp: 2021-12-08 at 20:16:43 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 149 ms; Message: Query successful - USE DATABASE CENT_DB1

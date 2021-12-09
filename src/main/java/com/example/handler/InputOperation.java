@@ -52,10 +52,7 @@ public class InputOperation {
     }
 
     public static void operate(Scanner scanner, String query) {
-        List<String> strings = Arrays.asList(query.split("\\s"));
-        Operation operation = Operation.valueOf(strings.get(0).trim().toUpperCase(Locale.ROOT));
-
-        operation.accept(new Operation.OperationVisitor<Void>() {
+        QueryUtil.getOperation(query).accept(new Operation.OperationVisitor<Void>() {
 
             final MetadataService metadataService = new MetadataServiceImpl();
             final DatabaseParser databaseParser = new DatabaseParser(metadataService);
@@ -64,6 +61,7 @@ public class InputOperation {
 
             @Override
             public Void visitUse() {
+
                 metadata = databaseParser.use(query);
                 checkDatabase(metadata);
                 System.out.printf("%s selected \n", metadata.getDatabaseName());
@@ -165,9 +163,11 @@ public class InputOperation {
             @Override
             public Void visitStartTransaction() {
                 checkDatabase(metadata);
+
                 eventLogService.log("Transaction started");
-                InputTransaction.query(scanner, metadata);
+                InputTransaction.query(scanner, metadata, UUID.randomUUID().toString());
                 eventLogService.log("Transaction completed");
+
                 return null;
             }
         });
