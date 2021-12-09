@@ -51,4 +51,6 @@ public class Constants {
     public static final String TXT_FILE_EXTENSION = ".txt";
 
     public static final String SQL_FILE_EXTENSION = ".sql";
+
+    public static final String ANALYTICS_QUERY="COUNT";
 }

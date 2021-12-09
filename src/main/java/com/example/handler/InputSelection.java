@@ -50,6 +50,9 @@ public class InputSelection {
                 System.out.print("Reverse Engineering selected \n");
                 InputOperation.generateERD(scanner);
             case "4":
+                System.out.print("Analytics Selected \n");
+                InputAnalytics.query(scanner);
+            case "5":
                 System.exit(0);
             default:
                 break;
