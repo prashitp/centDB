@@ -26,13 +26,13 @@ public class GeneralLogService extends LogService{
         return new GeneralLogService();
     }
     public void log(String string) {
-        try {
-            String log = prefix().concat("Message: ").concat(string).concat("\n");
-            fileWriter.write(log);
-            fileWriter.flush();
-        } catch (IOException e) {
-            System.out.println("Error logging");
-        }
+//        try {
+//            String log = prefix().concat("Message: ").concat(string).concat("\n");
+//            fileWriter.write(log);
+//            fileWriter.flush();
+//        } catch (IOException e) {
+//            System.out.println("Error logging");
+//        }
     }
 
     public String prefix() {

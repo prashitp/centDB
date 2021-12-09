@@ -94,7 +94,7 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         entries.add(entryBuilder(table));
         table.getColumns().forEach(column -> entries.add(entryBuilder(column)));
         Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> entries.add(entryBuilderPrimaryKey(table.getPrimaryKey())));
-        if (!table.getForeignKeys().isEmpty()) {
+        if (Objects.nonNull(table.getForeignKeys()) && !table.getForeignKeys().isEmpty()) {
             Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
                     foreignKeys.forEach(foreignKey -> entries.add(entryBuilder(foreignKey))));
         }
