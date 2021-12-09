@@ -38,6 +38,12 @@ public class Constants {
 
     public static final String START_TRANSACTION = "START TRANSACTION";
 
+    public static final String PRIMARY_KEY = "PRIMARY KEY";
+
+    public static final String FOREIGN_KEY = "FOREIGN KEY";
+
+    public static final String REFERENCES = "REFERENCES";
+
     public static final String DB_DIRECTORY = "storage/METADATA/";
 
     public static final String TB_DIRECTORY = "storage/";

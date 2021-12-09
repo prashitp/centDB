@@ -101,40 +101,52 @@ public class TableParser {
     public TableQuery create(String query, Metadata metadata) {
         String table = StringUtil.match(query, CREATE_TABLE, "\\(");
         String[] columnStrings = removeParenthesis(StringUtil.matchFrom(query, table)).split(COMMA);
+
         List<Column> columns = new ArrayList<>();
-        List<ForeignKey> foreignKeys = new ArrayList<>();
-        ForeignKey foreignKeyObject = new ForeignKey();
+        ForeignKey foreignKey = null;
+        String primaryKey = null;
+        Column primaryColumn = null;
 
         for (String column: columnStrings) {
-            String[] details = column.split("\\s");
-            if (details[0].equals("PRIMARY")){
-                columns.add(Column.builder()
-                        .name(details[2])
-                        .dataType("int")
-                        .build());
+            String[] details = column.trim().split("\\s");
+
+            if (column.contains(PRIMARY_KEY)) {
+                primaryKey = details[2];
             }
-            else if (details[0].equals("FOREIGN")) {
-                foreignKeyObject.setForeignKeyColumn(details[2]);
-                foreignKeyObject.setReferenceTableName(details[4]);
-                foreignKeyObject.setReferenceTableName(details[5]);
+
+            if (column.contains(FOREIGN_KEY)) {
+                String currentTableColumn = StringUtil.match(column, FOREIGN_KEY, REFERENCES);
+                String[] strings = StringUtil.matchFrom(query, REFERENCES).split("\\(");
+                foreignKey = ForeignKey.builder()
+                        .foreignKeyColumn(currentTableColumn)
+                        .referenceColumnName(removeParenthesis(strings[1]))
+                        .referenceTableName(strings[0])
+                        .build();
             }
-            else {
-                columns.add(Column.builder()
-                        .name(details[0])
-                        .dataType(details[1])
-                        .build());
-            }
-            foreignKeys.add(foreignKeyObject);
+
+            columns.add(Column.builder()
+                    .name(details[0])
+                    .dataType(details[1])
+                    .build());
         }
 
+        if (Objects.nonNull(primaryKey)) {
+            String finalPrimaryColumn = primaryKey;
+            primaryColumn = columns.stream()
+                    .filter(data -> data.getName().equalsIgnoreCase(finalPrimaryColumn))
+                    .findFirst()
+                    .get();
+        }
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
                 .tableName(table)
+                .columns(columns)
                 .table(Table.builder()
+                        .name(table)
                         .columns(columns)
-                        .primaryKey(Column.builder().build())
-                        .foreignKeys(foreignKeys)
+                        .primaryKey(primaryColumn)
+                        .foreignKeys(Objects.nonNull(foreignKey) ? Collections.singletonList(foreignKey) : null)
                         .build())
                 .tableOperation(Operation.CREATE)
                 .build();

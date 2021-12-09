@@ -39,12 +39,13 @@ public class InputOperation {
 
                 long startTime = System.currentTimeMillis();
 
-                operate(scanner, query.toUpperCase(Locale.ROOT));
+                operate(scanner, query);
 
                 long endTime = System.currentTimeMillis();
                 LogContext.setExecutionTime(endTime-startTime);
                 generalLogService.log(String.format("Query successful - %s",query));
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 eventLogService.log(String.format("Operation failed - %s",e.getMessage()));
                 continue QUERY;
             }
