@@ -44,6 +44,7 @@ public class InputSelection {
                 break;
             case "2":
                 System.out.print("Export selected \n");
+                InputOperation.exportData(scanner);
                 break;
             case "3":
                 System.out.print("Reverse Engineering selected \n");

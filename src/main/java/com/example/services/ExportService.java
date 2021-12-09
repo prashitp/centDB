@@ -2,7 +2,6 @@ package com.example.services;
 
 import com.example.models.*;
 import com.example.models.enums.Entity;
-import com.example.models.enums.MetadataToken;
 import com.example.services.metadata.MetadataService;
 import com.example.services.metadata.MetadataServiceImpl;
 import com.example.util.Constants;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 public class ExportService {
 
-    public static boolean createSqlDump(String databaseName) {
+    public static void createSqlDump(String databaseName) {
         File[] databaseFiles = new File(Constants.DB_DIRECTORY).listFiles();
         boolean isGenerated = false;
         for (int i = 0; i < databaseFiles.length; i++) {
@@ -39,7 +38,12 @@ public class ExportService {
                 }
             }
         }
-        return isGenerated;
+        if (isGenerated){
+            System.out.println("Dump file created successfully");
+        }else {
+            System.out.println("Something is not right with export export database.. ");
+        }
+
     }
 
     public static void writeDbInFile(String DB_NAME) {
@@ -62,8 +66,8 @@ public class ExportService {
             BufferedWriter bufferedWriter = new BufferedWriter(fr);
             Set<String> tableNames = new HashSet<String>();
             while ((line = bufferedReader.readLine()) != null) {
-                switch (MetadataToken.valueOf(line.split("\\|")[0])) {
-                    case TB:
+                switch (line.split("\\|")[0]) {
+                    case "TB":
                         String tableName = line.split("\\|")[1];
                         bufferedWriter.write("\n");
                         bufferedWriter.write("\n");
@@ -76,10 +80,10 @@ public class ExportService {
                         bufferedWriter.write("CREATE TABLE " + "`" + tableName + "`" + " ("+"\n");
                         tableNames.add(tableName);
                         break;
-                    case CL:
+                    case "CL":
                         bufferedWriter.write("`" + line.split("\\|")[1] + "` " + line.split("\\|")[2] + ",\n");
                         break;
-                    case PK:
+                    case "PK":
                         bufferedWriter.write("PRIMARY KEY " + "(`" + line.split("\\|")[1] + "`)\n");
                         bufferedWriter.write(");\n");
                         break;

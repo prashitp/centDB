@@ -198,15 +198,14 @@ public class InputOperation {
     public static void generateERD(Scanner scanner) {
         System.out.println("Enter the database name : ");
         final String databaseName = scanner.nextLine();
-
-        long startTime = System.currentTimeMillis();
-        generalLogService.log("Creating ERD");
-
         ExportService.createErd(databaseName);
-
-        long endTime = System.currentTimeMillis();
-        LogContext.setExecutionTime(endTime-startTime);
         generalLogService.log("ERD created");
+    }
+
+    public static void exportData(Scanner scanner) {
+        System.out.println("Enter the database name to be exported: ");
+        final String databaseName = scanner.nextLine();
+        ExportService.createSqlDump(databaseName);
     }
 
     private static void getAllTablesWithRows(Metadata metadata) {
