@@ -108,7 +108,6 @@ public class InputOperation {
                 List<Row> rows = tableProcessor.insert(tableQuery);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
-//                LogContext.setDatabaseTables(getAllTablesWithRows(metadata));
                 getAllTablesWithRows(metadata);
                 queryLogService.log(rows.size() + " rows inserted");
                 return null;
