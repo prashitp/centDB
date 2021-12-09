@@ -35,19 +35,19 @@ public class QueryLogService extends LogService {
 	private String prefix() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		String date = format.format(new Date(System.currentTimeMillis()));
-		String prefix = String.format("User: %s, Timestamp: %s, ", LogContext.getUser().getUsername(), date);
+		String prefix = String.format("User: %s; Timestamp: %s; ", LogContext.getUser().getUsername(), date);
 
 		if (Objects.nonNull(LogContext.getMetadata())) {
 			Metadata metadata = LogContext.getMetadata();
 			if (Objects.nonNull(metadata.getDatabaseName())) {
 				String databaseName = metadata.getDatabaseName();
-				prefix = prefix.concat(String.format("Database: %s, ", databaseName));
+				prefix = prefix.concat(String.format("Database: %s; ", databaseName));
 			}
 		}
 
 		if (Objects.nonNull(LogContext.getTable())) {
 			String tableName = LogContext.getTable().getName();
-			prefix = prefix.concat(String.format("Table: %s, ", tableName));
+			prefix = prefix.concat(String.format("Table: %s; ", tableName));
 		}
 		return prefix;
 	}

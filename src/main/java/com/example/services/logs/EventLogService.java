@@ -38,7 +38,7 @@ public class EventLogService extends LogService {
 	public String prefix() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		String date = format.format(new Date(System.currentTimeMillis()));
-		String prefix = String.format("User: %s, Timestamp: %s; ", LogContext.getUser().getUsername(), date);
+		String prefix = String.format("User: %s; Timestamp: %s; ", LogContext.getUser().getUsername(), date);
 
 		if (Objects.nonNull(LogContext.getMetadata())) {
 			Metadata metadata = LogContext.getMetadata();
