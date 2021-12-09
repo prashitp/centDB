@@ -16,6 +16,7 @@ import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.util.Constants.CREATE_DATABASE;
 
@@ -46,6 +47,7 @@ public class InputOperation {
                 generalLogService.log(String.format("Query successful - %s",query));
             } catch (Exception e) {
                 eventLogService.log(String.format("Operation failed - %s",e.getMessage()));
+                System.out.println("Error : " + e.getMessage());
                 continue QUERY;
             }
         } while (true);
@@ -122,6 +124,8 @@ public class InputOperation {
                 queryLogService.log(String.format("Selection started - %s",query));
                 TableQuery tableQuery = tableParser.select(query, metadata);
                 List<Row> rows = tableProcessor.select(tableQuery);
+
+                printRow(rows);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
                 queryLogService.log( rows.size() + " rows selected");
@@ -212,4 +216,44 @@ public class InputOperation {
         });
         metadata.getDatabase().updateTables(tables);
     }
+
+    public static void printRow(List<Row> rowList){
+        boolean printHeader = true;
+        for (Row row: rowList){
+            List<Field> fields = row.getAllFieldsOfRow();
+
+            if (printHeader) {
+                List<String> columnNames = fields.stream().map(field -> field.getColumn().getName()).collect(Collectors.toList());
+                StringBuilder builder = new StringBuilder();
+                for (String columnName : columnNames) {
+                    builder.append(padLeftWithSpaces(columnName, 30));
+                }
+                System.out.format("------------------------------------------------------------------------------------------\n");
+                System.out.println(builder.toString());
+                System.out.format("------------------------------------------------------------------------------------------\n");
+                printHeader = false;
+            }
+
+            StringBuilder rowValue = new StringBuilder();
+            for (Field field: fields){
+               rowValue.append(padLeftWithSpaces(field.getValue().toString(), 30));
+            }
+            System.out.println(rowValue.toString());
+            System.out.format("------------------------------------------------------------------------------------------\n");
+        }
+    }
+
+    private static String padLeftWithSpaces(String str, int length) {
+        if (str.length() > length) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder(str);
+        int currLen = sb.length();
+        while (currLen <= length) {
+            sb.append(" ");
+            currLen++;
+        }
+        return sb.toString();
+    }
+
 }
