@@ -1,0 +1,10 @@
+User: ADESH, Timestamp: 2021-12-09 at 11:51:05 GMT-04:00; Execution Time: 104 ms; Message: Query successful - CREATE DATABASE STUDENT
+User: ADESH, Timestamp: 2021-12-09 at 11:53:27 GMT-04:00; Execution Time: 104 ms; Message: Query successful - CREATE DATABASE STUDENT
+User: ADESH, Timestamp: 2021-12-09 at 11:56:58 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (3) MOVIES (0); Execution Time: 131 ms; Message: Query successful - USE DATABASE CENT_DB1
+User: ADESH, Timestamp: 2021-12-09 at 11:57:03 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (3) MOVIES (0); Execution Time: 28 ms; Message: Query successful - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:12 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 50 ms; Message: Query successful - INSERT INTO BIRDS (BIRD_ID,COMMON_NAME,SCIENTIFIC_NAME) VALUES (1,BIRD1,BIRD1)
+User: ADESH, Timestamp: 2021-12-09 at 11:57:22 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 13 ms; Message: Query successful - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:30 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 41 ms; Message: Query successful - UPDATE BIRDS SET COMMON_NAME = COMMONNAME1 WHERE BIRD_ID = 1
+User: ADESH, Timestamp: 2021-12-09 at 11:57:36 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 14 ms; Message: Query successful - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:42 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (3) MOVIES (0); Execution Time: 22 ms; Message: Query successful - DELETE FROM BIRDS WHERE COMMON_NAME = COMMONNAME1
+User: ADESH, Timestamp: 2021-12-09 at 11:57:48 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (3) MOVIES (0); Execution Time: 9 ms; Message: Query successful - SELECT * FROM BIRDS

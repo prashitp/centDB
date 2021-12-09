@@ -160,7 +160,7 @@ public class QueueService {
         Set<TableLock> currentLocks = getLocks();
 
         if (isLocked(requiredLocks, currentLocks, databaseName)) {
-            // Wait for 30 seconds and terminate;
+            System.out.println("Waiting for lock");
         } else {
             for (TableLock requiredLock: requiredLocks) {
                 save(requiredLock);

@@ -1,0 +1,15 @@
+User: ADESH, Timestamp: 2021-12-09 at 11:56:05 GMT-04:00, Message: Selection started - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:03 GMT-04:00, Database: CENT_DB1, Message: Selection started - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:03 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 3 rows selected
+User: ADESH, Timestamp: 2021-12-09 at 11:57:12 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Insert started - INSERT INTO BIRDS (BIRD_ID,COMMON_NAME,SCIENTIFIC_NAME) VALUES (1,BIRD1,BIRD1)
+User: ADESH, Timestamp: 2021-12-09 at 11:57:12 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 1 rows inserted
+User: ADESH, Timestamp: 2021-12-09 at 11:57:22 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Selection started - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:22 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 4 rows selected
+User: ADESH, Timestamp: 2021-12-09 at 11:57:30 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Update started - UPDATE BIRDS SET COMMON_NAME = COMMONNAME1 WHERE BIRD_ID = 1
+User: ADESH, Timestamp: 2021-12-09 at 11:57:30 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 1 rows updated
+User: ADESH, Timestamp: 2021-12-09 at 11:57:36 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Selection started - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:36 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 4 rows selected
+User: ADESH, Timestamp: 2021-12-09 at 11:57:42 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Delete started - DELETE FROM BIRDS WHERE COMMON_NAME = COMMONNAME1
+User: ADESH, Timestamp: 2021-12-09 at 11:57:42 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 1 rows deleted
+User: ADESH, Timestamp: 2021-12-09 at 11:57:48 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: Selection started - SELECT * FROM BIRDS
+User: ADESH, Timestamp: 2021-12-09 at 11:57:48 GMT-04:00, Database: CENT_DB1, Table: BIRDS, Message: 3 rows selected
