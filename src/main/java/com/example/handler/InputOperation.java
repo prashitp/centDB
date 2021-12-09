@@ -76,6 +76,8 @@ public class InputOperation {
                     @Override
                     public Void visitDatabase() {
                         databaseParser.create(query);
+
+                        System.out.printf("%s created \n", LogContext.getMetadata().getDatabaseName());
                         eventLogService.log("Database created");
                         return null;
                     }
@@ -84,6 +86,8 @@ public class InputOperation {
                     public Void visitTable() {
                         TableQuery tableQuery = tableParser.create(query, metadata);
                         tableProcessor.create(tableQuery);
+
+                        System.out.printf("%s created \n", tableQuery.getTableName());
                         eventLogService.log("Table created");
                         return null;
                     }
@@ -96,6 +100,8 @@ public class InputOperation {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.drop(query, metadata);
                 tableProcessor.drop(tableQuery);
+
+                System.out.printf("%s dropped \n", tableQuery.getTableName());
                 eventLogService.log("Table dropped");
                 return null;
             }
