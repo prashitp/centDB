@@ -46,7 +46,6 @@ public class InputOperation {
                 LogContext.setExecutionTime(endTime-startTime);
                 generalLogService.log(String.format("Query successful - %s",query));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 eventLogService.log(String.format("Operation failed - %s",e.getMessage()));
                 System.out.println("Error : " + e.getMessage());
                 continue QUERY;
@@ -79,7 +78,7 @@ public class InputOperation {
                     public Void visitDatabase() {
                         databaseParser.create(query);
 
-                        System.out.printf("%s created \n", LogContext.getMetadata().getDatabaseName());
+                        System.out.println("Database created");
                         eventLogService.log("Database created");
                         return null;
                     }
@@ -89,7 +88,7 @@ public class InputOperation {
                         TableQuery tableQuery = tableParser.create(query, metadata);
                         tableProcessor.create(tableQuery);
 
-                        System.out.printf("%s created \n", tableQuery.getTableName());
+                        System.out.println("Table created");
                         eventLogService.log("Table created");
                         return null;
                     }
@@ -103,7 +102,7 @@ public class InputOperation {
                 TableQuery tableQuery = tableParser.drop(query, metadata);
                 tableProcessor.drop(tableQuery);
 
-                System.out.printf("%s dropped \n", tableQuery.getTableName());
+                System.out.println("Table dropped");
                 eventLogService.log("Table dropped");
                 return null;
             }
