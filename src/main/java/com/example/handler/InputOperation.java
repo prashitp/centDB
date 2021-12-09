@@ -136,6 +136,7 @@ public class InputOperation {
                 printRow(rows);
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
+
                 queryLogService.log( rows.size() + " rows selected");
                 return null;
             }
