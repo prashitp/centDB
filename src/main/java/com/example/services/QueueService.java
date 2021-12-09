@@ -1,18 +1,19 @@
 package com.example.services;
 
+import com.example.TableLock;
 import com.example.models.TransactionMessage;
 import com.example.models.enums.Lock;
 import com.example.models.enums.Operation;
+import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.util.Constants.PIPE_DELIMITER;
 
@@ -21,8 +22,8 @@ public class QueueService {
     FileWriter queueFileWriter;
     FileWriter lockFileWriter;
 
-    String queuePath = "storage/transactions/queue.txt";
-    String lockPath = "storage/transactions/locks.txt";
+    String queuePath = "storage/transaction/queue.txt";
+    String lockPath = "storage/transaction/locks.txt";
 
     @SneakyThrows
     public QueueService() {
@@ -31,18 +32,26 @@ public class QueueService {
     }
 
     @SneakyThrows
-    public List<TransactionMessage> getTransactions() {
+    public List<TransactionMessage> getTransactions(String database) {
         List<TransactionMessage> transactionMessages = new ArrayList<>();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(queuePath));
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             String[] strings = line.split("\\|");
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            Date parsedDate = dateFormat.parse(strings[0]);
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+
             transactionMessages.add(TransactionMessage.builder()
-                    .timestamp(Timestamp.valueOf(strings[0]))
+                    .timestamp(timestamp)
                     .id(strings[1])
                     .database(strings[2])
                     .query(strings[3])
+                    .tableQuery(QueryUtil.getQuery(strings[3], database))
                     .build());
+
+            transactionMessages.sort(Comparator.comparing(TransactionMessage::getTimestamp));
         }
         return transactionMessages;
     }
@@ -55,36 +64,126 @@ public class QueueService {
                 .concat(transactionMessage.getDatabase()).concat(PIPE_DELIMITER)
                 .concat(transactionMessage.getQuery());
 
-        queueFileWriter.write(transactionString.concat("\n"));
+        lockFileWriter.write(transactionString.concat("\n"));
+        lockFileWriter.flush();
+
+        return isSaved;
+    }
+
+    @SneakyThrows
+    public Boolean save(TableLock tableLock) {
+        Boolean isSaved = true;
+        String currentTimestamp = new Timestamp(System.currentTimeMillis()).toString();
+        String lockString = currentTimestamp.concat(PIPE_DELIMITER)
+                .concat(tableLock.getTransactionId()).concat(PIPE_DELIMITER)
+                .concat(tableLock.getDatabase()).concat(PIPE_DELIMITER)
+                .concat(tableLock.getTable()).concat(PIPE_DELIMITER)
+                .concat(tableLock.getLock().name());
+
+        queueFileWriter.write(lockString.concat("\n"));
         queueFileWriter.flush();
 
         return isSaved;
     }
 
-    public void execute() {
 
+    @SneakyThrows
+    public Set<TableLock> getLocks() {
+        Set<TableLock> tableLocks = new HashSet<>();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(lockPath));
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] strings = line.split("\\|");
+            tableLocks.add(TableLock.builder()
+                    .transactionId(strings[1])
+                    .database(strings[2])
+                    .table(strings[3])
+                    .lock(Lock.valueOf(strings[4].trim()))
+                    .build());
+        }
+        return tableLocks;
     }
 
     public void lock() {
 
     }
 
-    public Lock getLock(List<TransactionMessage> transactionMessages) {
-        Lock lock = Lock.SHARED;
-        List<Operation> dmlOperations = Arrays.asList(Operation.INSERT, Operation.UPDATE, Operation.DELETE);
-        Optional<TransactionMessage> dmlTransaction = transactionMessages.stream()
-                .filter(data -> dmlOperations.contains(data.getTableQuery().getTableOperation()))
-                .findAny();
+    public Set<TableLock> getLocks(List<TransactionMessage> transactionMessages) {
+        Set<TableLock> tableLocks = new HashSet<>();
+        List<Operation> dmlOperations = Arrays.asList(Operation.INSERT, Operation.UPDATE,
+                Operation.DELETE);
+        List<Operation> ddlOperations = Arrays.asList(Operation.SELECT);
 
-        if (dmlTransaction.isPresent()) {
-            lock = Lock.EXCLUSIVE;
+        List<TransactionMessage> dmlTransactions = transactionMessages.stream()
+                .filter(data -> dmlOperations.contains(data.getTableQuery().getTableOperation()))
+                .collect(Collectors.toList());
+        List<TransactionMessage> ddlTransactions = transactionMessages.stream()
+                .filter(data -> ddlOperations.contains(data.getTableQuery().getTableOperation()))
+                .collect(Collectors.toList());
+
+        for (TransactionMessage message: dmlTransactions) {
+            tableLocks.add(TableLock.builder()
+                    .transactionId(message.getId())
+                    .lock(Lock.EXCLUSIVE)
+                    .table(message.getTableQuery().getTableName())
+                    .database(message.getTableQuery().getSchemaName())
+                    .build());
         }
-        return lock;
+
+        for (TransactionMessage message: ddlTransactions) {
+            tableLocks.add(TableLock.builder()
+                    .transactionId(message.getId())
+                    .lock(Lock.SHARED)
+                    .table(message.getTableQuery().getTableName())
+                    .database(message.getTableQuery().getSchemaName())
+                    .build());
+        }
+        return tableLocks;
     }
 
-    public void commit(TransactionMessage transactionMessage) {
-        String transactionId = transactionMessage.getId();
+    public void commit(String transactionId, String databaseName) {
 
-        // Loop locks and remove the locks.
+        List<TransactionMessage> transactions = getTransactions(databaseName).stream()
+                .filter(data -> data.getId().equals(transactionId))
+                .collect(Collectors.toList());
+
+        Set<TableLock> requiredLocks = getLocks(transactions);
+        Set<TableLock> currentLocks = getLocks();
+
+        if (isLocked(requiredLocks, currentLocks, databaseName)) {
+            // Wait for 30 seconds and terminate;
+        } else {
+            for (TableLock requiredLock: requiredLocks) {
+                save(requiredLock);
+            }
+
+            for (TransactionMessage transaction: transactions) {
+                QueryUtil.execute(transaction.getQuery(), transaction.getDatabase());
+            }
+        }
+    }
+
+    public Boolean isLocked(Set<TableLock> requiredLocks, Set<TableLock> currentLocks, String database) {
+        boolean isLocked = false;
+        Map<String, TableLock> currentLockMap = new HashMap<>();
+        currentLocks = currentLocks.stream()
+                .filter(data -> data.getDatabase().equals(database))
+                .collect(Collectors.toSet());
+        for (TableLock lock: currentLocks) {
+            currentLockMap.put(lock.getTable(), lock);
+        }
+
+        for (TableLock requiredLock: requiredLocks) {
+            if (currentLockMap.containsKey(requiredLock.getTable())) {
+                TableLock currentLock = currentLockMap.get(requiredLock.getTable());
+                if ((requiredLock.getLock().equals(Lock.EXCLUSIVE) ||
+                        (currentLock.getLock().equals(requiredLock.getLock())))) {
+                    isLocked = true;
+                    break;
+                }
+            }
+        }
+        return isLocked;
     }
 }

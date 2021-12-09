@@ -1,12 +1,11 @@
 package com.example.models;
 
+import com.example.models.enums.Operation;
+import com.example.services.accessor.FileAccessorImpl;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Setter
@@ -62,5 +61,4 @@ public class Metadata {
         }
         return table;
     }
-
 }

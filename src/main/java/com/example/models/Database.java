@@ -26,4 +26,8 @@ public class Database {
         tables.add(table);
     }
 
+    public void updateTables(List<Table> tables) {
+        this.tables = tables;
+    }
+
 }
