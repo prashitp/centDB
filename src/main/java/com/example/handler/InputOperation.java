@@ -121,11 +121,12 @@ public class InputOperation {
             public Void visitSelect() {
                 checkDatabase(metadata);
 
-                queryLogService.log(String.format("Selection started - %s",query));
                 TableQuery tableQuery = tableParser.select(query, metadata);
+                LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
+                queryLogService.log(String.format("Selection started - %s",query));
+
                 List<Row> rows = tableProcessor.select(tableQuery);
 
-                LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
                 queryLogService.log( rows.size() + " rows selected");
                 return null;
             }
