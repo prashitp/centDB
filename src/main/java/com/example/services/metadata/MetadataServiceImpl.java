@@ -94,8 +94,10 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         entries.add(entryBuilder(table));
         table.getColumns().forEach(column -> entries.add(entryBuilder(column)));
         Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> entries.add(entryBuilderPrimaryKey(table.getPrimaryKey())));
-        Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
-                foreignKeys.forEach(foreignKey -> entries.add(entryBuilder(foreignKey))));
+        if (!table.getForeignKeys().isEmpty()) {
+            Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
+                    foreignKeys.forEach(foreignKey -> entries.add(entryBuilder(foreignKey))));
+        }
         return appendToFile(metadataFilePath, entries);
     }
 
@@ -182,8 +184,10 @@ public class MetadataServiceImpl extends AbstractMetadataService {
         tableEntries.add(entryBuilder(table));
         table.getColumns().forEach(column -> tableEntries.add(entryBuilder(column)));
         Optional.ofNullable(table.getPrimaryKey()).ifPresent(column -> tableEntries.add(entryBuilderPrimaryKey(column)));
-        Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
-                foreignKeys.forEach(foreignKey -> tableEntries.add(entryBuilder(foreignKey))));
+        if (!table.getForeignKeys().isEmpty()) {
+            Optional.ofNullable(table.getForeignKeys()).ifPresent(foreignKeys ->
+                    foreignKeys.forEach(foreignKey -> tableEntries.add(entryBuilder(foreignKey))));
+        }
         for (int i=0, j=0; i < allEntries.size() && j < tableEntries.size(); i++) {
             String allEntry = allEntries.get(i);
             String tableEntry = tableEntries.get(j);

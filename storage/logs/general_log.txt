@@ -1,4 +1,0 @@
-User: TEST, Timestamp: 2021-12-08 at 19:57:57 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 131 ms; Message: Query successful - USE DATABASE CENT_DB1
-User: TEST, Timestamp: 2021-12-08 at 20:07:31 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 2538 ms; Message: Query successful - USE DATABASE CENT_DB1
-User: TEST, Timestamp: 2021-12-08 at 20:11:34 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 157 ms; Message: Query successful - USE DATABASE CENT_DB1
-User: TEST, Timestamp: 2021-12-08 at 20:16:43 GMT-04:00; Database: CENT_DB1 (2); Tables: BIRDS (4) MOVIES (0); Execution Time: 149 ms; Message: Query successful - USE DATABASE CENT_DB1

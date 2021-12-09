@@ -8,8 +8,11 @@ import com.example.util.QueryUtil;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -64,8 +67,8 @@ public class QueueService {
                 .concat(transactionMessage.getDatabase()).concat(PIPE_DELIMITER)
                 .concat(transactionMessage.getQuery());
 
-        lockFileWriter.write(transactionString.concat("\n"));
-        lockFileWriter.flush();
+        queueFileWriter.write(transactionString.concat("\n"));
+        queueFileWriter.flush();
 
         return isSaved;
     }
@@ -80,8 +83,8 @@ public class QueueService {
                 .concat(tableLock.getTable()).concat(PIPE_DELIMITER)
                 .concat(tableLock.getLock().name());
 
-        queueFileWriter.write(lockString.concat("\n"));
-        queueFileWriter.flush();
+        lockFileWriter.write(lockString.concat("\n"));
+        lockFileWriter.flush();
 
         return isSaved;
     }
@@ -105,8 +108,13 @@ public class QueueService {
         return tableLocks;
     }
 
-    public void lock() {
-
+    @SneakyThrows
+    public void flush(String transactionId) {
+        File file = new File(lockPath);
+        List<String> out = Files.lines(file.toPath())
+                .filter(line -> !line.contains(transactionId))
+                .collect(Collectors.toList());
+        Files.write(file.toPath(), out, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public Set<TableLock> getLocks(List<TransactionMessage> transactionMessages) {
@@ -161,6 +169,8 @@ public class QueueService {
             for (TransactionMessage transaction: transactions) {
                 QueryUtil.execute(transaction.getQuery(), transaction.getDatabase());
             }
+
+            flush(transactionId);
         }
     }
 
