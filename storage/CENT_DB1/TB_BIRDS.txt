@@ -1,4 +1,3 @@
-3|BirdCommonName3|BirdScientificName3|
 4|BirdCommonName4||
 5||BirdScientificName5|
 6|||

@@ -64,8 +64,8 @@ public class QueueService {
                 .concat(transactionMessage.getDatabase()).concat(PIPE_DELIMITER)
                 .concat(transactionMessage.getQuery());
 
-        queueFileWriter.write(transactionString.concat("\n"));
-        queueFileWriter.flush();
+        lockFileWriter.write(transactionString.concat("\n"));
+        lockFileWriter.flush();
 
         return isSaved;
     }
