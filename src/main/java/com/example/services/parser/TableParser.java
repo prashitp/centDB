@@ -103,16 +103,30 @@ public class TableParser {
         String[] columnStrings = removeParenthesis(StringUtil.matchFrom(query, table)).split(COMMA);
         List<Column> columns = new ArrayList<>();
         List<ForeignKey> foreignKeys = new ArrayList<>();
+        ForeignKey foreignKeyObject = new ForeignKey();
 
         for (String column: columnStrings) {
             String[] details = column.split("\\s");
-            columns.add(Column.builder()
-                    .name(details[0])
-                    .dataType(details[1])
-                    .build());
-
-            // Code for primary and foreign key.
+            if (details[0].equals("PRIMARY")){
+                columns.add(Column.builder()
+                        .name(details[2])
+                        .dataType("int")
+                        .build());
+            }
+            else if (details[0].equals("FOREIGN")) {
+                foreignKeyObject.setForeignKeyColumn(details[2]);
+                foreignKeyObject.setReferenceTableName(details[4]);
+                foreignKeyObject.setReferenceTableName(details[5]);
+            }
+            else {
+                columns.add(Column.builder()
+                        .name(details[0])
+                        .dataType(details[1])
+                        .build());
+            }
+            foreignKeys.add(foreignKeyObject);
         }
+
 
         return TableQuery.builder()
                 .schemaName(metadata.getDatabaseName())
