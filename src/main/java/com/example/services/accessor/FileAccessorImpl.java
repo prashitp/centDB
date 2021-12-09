@@ -4,6 +4,7 @@ import com.example.exceptions.InvalidOperation;
 import com.example.models.*;
 import com.example.models.enums.Entity;
 
+import com.example.models.enums.Operator;
 import com.example.services.metadata.MetadataService;
 import com.example.services.metadata.MetadataServiceImpl;
 import com.example.models.enums.Operation;
@@ -40,6 +41,27 @@ public class FileAccessorImpl implements TableAccessor {
             throw new Exception("Malformed query " + Operation.INSERT.name());
         }
         List<Row> rowsToInsert = query.getRows();
+        Metadata metadataInsert = new MetadataServiceImpl().read(Entity.TABLE, query.getSchemaName());
+        Table table =  metadataInsert.getTableByName(query.getTableName());
+        Column primaryKey = table.getPrimaryKey();
+
+        for (Row row : rowsToInsert) {
+            Field primaryKeyField = row.getFieldByColumnName(primaryKey.getName());
+            Condition primaryKeyCondition = Condition.builder().operand1(primaryKey.getName())
+                    .operator(Operator.EQUALS).operand2(primaryKeyField.getValue().toString()).build();
+            TableQuery selectQuery = TableQuery.builder()
+                    .schemaName(query.getSchemaName())
+                    .tableName(query.getTableName())
+                    .columns(query.getColumns())
+                    .tableOperation(Operation.SELECT)
+                    .conditions(List.of(primaryKeyCondition))
+                    .build();
+            List<Row> rowsSelected = read(selectQuery);
+            if (rowsSelected.size() > 0) {
+                throw new Exception("Primary Key constraint violated");
+            }
+        }
+
         List<String> rowStrings = generateRowString(rowsToInsert, query.getSchemaName(), query.getTableName());
 //        rowStrings.forEach(System.out::println);
 
@@ -77,6 +99,7 @@ public class FileAccessorImpl implements TableAccessor {
                     if (Objects.nonNull(columnValue) && !columnValue.isBlank()) {
                         columnValue = columnValue.replace("|", "\\|");
                     }
+//                    need to make changes here
                     rowString.append(columnValue).append(PIPE_DELIMITER);
                 }
                 else {

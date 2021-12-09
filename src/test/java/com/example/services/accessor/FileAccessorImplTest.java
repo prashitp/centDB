@@ -261,7 +261,7 @@ public class FileAccessorImplTest {
 //        UPDATE BIRDS SET SCIENTIFIC_NAME='BirdScientificName6' WHERE BIRD_ID=6
         FileAccessorImpl accessor = new FileAccessorImpl();
         Condition condition = Condition.builder().operand1("BIRD_ID").operator(Operator.EQUALS).operand2("6").build();
-        Field field = new Field(new Column("SCIENTIFIC_NAME", Datatype.VARCHAR.name()), "BirdScientificName6");
+        Field field = new Field(new Column("SCIENTIFIC_NAME", Datatype.VARCHAR.name()), "ScientificName6");
         TableQuery query = TableQuery.builder().schemaName(SCHEMA_NAME).tableName(TABLE_NAME).fields(List.of(field))
                 .tableOperation(Operation.UPDATE).conditions(List.of(condition)).build();
         List<Row> output = accessor.update(query);

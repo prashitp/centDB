@@ -143,19 +143,6 @@ public class ExportService {
         }
     }
 
-    public static void printRow(List<Row> rowList){
-        for (Row row: rowList){
-            List<Field> fields = row.getAllFieldsOfRow();
-            System.out.format("---------------------------------------------\n");
-            System.out.format("%32s", row.getFields());
-            for (Field field: fields){
-                System.out.format("---------------------------------------------\n");
-                System.out.format("%32s%10s", field.getColumn(), field.getValue());
-                System.out.format("---------------------------------------------\n");
-            }
-        }
-    }
-
     public static void linePrinter(FileWriter fileWriter) throws IOException {
         fileWriter.write(String.format("\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
     }
