@@ -76,6 +76,8 @@ public class InputOperation {
                     @Override
                     public Void visitDatabase() {
                         databaseParser.create(query);
+
+                        System.out.printf("%s created \n", LogContext.getMetadata().getDatabaseName());
                         eventLogService.log("Database created");
                         return null;
                     }
@@ -84,6 +86,8 @@ public class InputOperation {
                     public Void visitTable() {
                         TableQuery tableQuery = tableParser.create(query, metadata);
                         tableProcessor.create(tableQuery);
+
+                        System.out.printf("%s created \n", tableQuery.getTableName());
                         eventLogService.log("Table created");
                         return null;
                     }
@@ -96,6 +100,8 @@ public class InputOperation {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.drop(query, metadata);
                 tableProcessor.drop(tableQuery);
+
+                System.out.printf("%s dropped \n", tableQuery.getTableName());
                 eventLogService.log("Table dropped");
                 return null;
             }
@@ -107,9 +113,9 @@ public class InputOperation {
 
                 queryLogService.log(String.format("Insert started - %s",query));
                 List<Row> rows = tableProcessor.insert(tableQuery);
+                System.out.printf("%d rows inserted \n", rows.size());
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
-//                LogContext.setDatabaseTables(getAllTablesWithRows(metadata));
                 getAllTablesWithRows(metadata);
                 queryLogService.log(rows.size() + " rows inserted");
                 return null;
@@ -134,6 +140,7 @@ public class InputOperation {
                 checkDatabase(metadata);
                 TableQuery tableQuery = tableParser.update(query, metadata);
                 List<Row> rows = tableProcessor.update(tableQuery);
+                System.out.printf("%d rows updated \n", rows.size());
 
                 queryLogService.log(String.format("Update started - %s",query));
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
@@ -148,6 +155,7 @@ public class InputOperation {
 
                 queryLogService.log(String.format("Delete started - %s",query));
                 List<Row> rows = tableProcessor.delete(tableQuery);
+                System.out.printf("%d rows deleted \n", rows.size());
 
                 LogContext.setTable(QueryUtil.getTable(metadata, tableQuery.getTableName()));
                 getAllTablesWithRows(metadata);
